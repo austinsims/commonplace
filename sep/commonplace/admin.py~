@@ -1,0 +1,2 @@
+from django.contrib import admin
+from commonplace.models import Category, Item, Article, Picture, Video
