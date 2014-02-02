@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from commonplace import views
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -20,5 +21,7 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('django_facebook.auth_urls')), #Don't add this line if you use django registration or userena for registration and auth.
 
     # Commonplace URLs
-    url(r'^$', include('commonplace.urls'))
+    url(r'^$', include('commonplace.urls')),
+    url(r'^item/(?P<item_id>\d+)/$', views.detail, name='detail'),
+    url(r'^category/(?P<category_name>\w+)/$', views.category, name='category'),
 )
