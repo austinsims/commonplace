@@ -1,9 +1,13 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
 <h1>{{ item.title }}</h1>
 <p>
   Categories: 
   {% for c in category_list %}
-      <a href="/category/{{ c }}/">{{ c.name }}</a>
+      <a href="{% url 'category' c.name %}">{{ c.name }}</a>
   {% endfor %}
 </p>
 <p><i>Originally from <a href="{{ item.url }}">{{ item.url }}</a></i></p>
 <p>{{ item.description }}</p>
+{% endblock %}

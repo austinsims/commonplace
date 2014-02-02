@@ -1,6 +1,10 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
 <h1>Items in category {{ category.name }}</h1>
 <ul>
   {% for item in items %}
   <li><a href="/item/{{ item.id  }}">{{ item.title }}</a></li>
   {% endfor %}
 </ul>
+{% endblock %}

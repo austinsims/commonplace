@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}Commonplace{% endblock %}</title>
+  </head>
+  <body>
+    <div id="sidebar">
+      <ul>
+        <li><a href="/">Latest Items</a></li>
+      </ul>
+    </div>
+    <div id="content">
+    </div>
+  </body>
+</html>

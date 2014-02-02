@@ -1,0 +1,19 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- TODO:  figure out how to actually serve the css file, this isn't working -->
+    <link rel="stylesheet" href="{% static 'commonplace/style.css' %}" />
+    <title>{% block title %}Commonplace{% endblock %}</title>
+  </head>
+  <body>
+    <div id="sidebar">
+      {% block sidebar %}
+      Navigation: <a href="/">Latest Items</a>
+      {% endblock %}
+    </div>
+    <div id="content">
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>
