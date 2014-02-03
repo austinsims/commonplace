@@ -16,6 +16,8 @@ class Item(models.Model):
     url = models.CharField(max_length=2000)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     categories = models.ManyToManyField(Category)
+    def __unicode__(self):
+        return self.title
 
 class Article(Item):
     fulltext = models.CharField(max_length=4096)
@@ -25,3 +27,4 @@ class Picture(Item):
 
 class Video(Item):
     screenshot = models.ImageField(upload_to='video_screenshots')
+

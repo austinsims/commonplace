@@ -1,0 +1,15 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
+<p>Here is a list of items you've submitted</p>
+
+{% if my_items %}
+	<ul>
+	{% for item in my_items %}
+		<li><a href="{% url 'detail' item.id %}">{{ item.title }}</a></li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p>No items available.</p>
+{% endif %}
+{% endblock %}

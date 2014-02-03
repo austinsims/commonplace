@@ -7,9 +7,22 @@
     <title>{% block title %}Commonplace{% endblock %}</title>
   </head>
   <body>
+    <div id="login">
+      {% if not user.is_authenticated %}
+      Please log in.
+      <form action="{% url 'facebook_connect' %}" method="post">
+        {% csrf_token %}
+        <!-- TODO: use <input type="image" src="{{ STATIC_URL }}commonplace/images/facebook_login.png"> instead of button. -->
+        <input type="submit" value="Login with Facebook" />
+      </form>
+      {% endif %}
+      {% if user.is_authenticated %}
+      Welcome, {{ user }}! <a href="{% url 'auth_logout' %}?next={{ request.path|urlencode }}">logout</a>
+      {% endif %}
+    </div>
     <div id="sidebar">
       {% block sidebar %}
-      Navigation: <a href="/">Latest Items</a>
+      Navigation: <a href="{% url 'index' %}">Latest Items</a> <a href="{% url 'my_items' %}">My Items</a>
       {% endblock %}
     </div>
     <div id="content">

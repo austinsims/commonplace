@@ -21,7 +21,8 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('django_facebook.auth_urls')), #Don't add this line if you use django registration or userena for registration and auth.
 
     # Commonplace URLs
-    url(r'^$', include('commonplace.urls')),
-    url(r'^item/(?P<item_id>\d+)/$', views.detail, name='detail'),
+    url(r'^$', views.index, name='index'),
+    url(r'^item/(?P<pk>\d+)/$', views.DetailView.as_view(), name='detail'),
     url(r'^category/(?P<category_name>\w+)/$', views.category, name='category'),
+    url(r'^my_items?/$', views.my_items, name='my_items'),
 )
