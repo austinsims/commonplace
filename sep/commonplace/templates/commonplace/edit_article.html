@@ -1,0 +1,10 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
+<form action="{{ action }}" method="POST">
+  {% csrf_token %}
+  <ul>
+    {{ form.as_p }}
+  </ul>
+</form>
+{% endblock %}

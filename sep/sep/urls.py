@@ -23,9 +23,10 @@ urlpatterns = patterns('',
     # Commonplace URLs
     url(r'^$', views.index, name='index'),
     url(r'^item/(?P<pk>\d+)?/$', views.ItemDetailView.as_view(), name='item_detail'),
-    url(r'^create/article', views.CreateArticle.as_view(), name='create_article'),
+    url(r'^create/article', views.CreateArticleView.as_view(), name='create_article'),
     url(r'^category/(?P<category_name>\w+)?/$', views.items_by_category, name='items_by_category'),
     url(r'^user/(?P<user_name>\w+)/submissions?/$', views.items_by_user, name='items_by_user'),
+    # TODO: use username instead of pk for user detail URL
     url(r'^user/(?P<pk>\d+)?/$', views.UserDetailView.as_view(), name='user_detail'),
     url(r'^my_items?/$', views.my_items, name='my_items'),
 )

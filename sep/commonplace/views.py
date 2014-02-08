@@ -1,8 +1,10 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
+#import forms
 
 from commonplace.models import Article, Video, Picture, Item, Category
+from commonplace.forms import ArticleForm
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -21,8 +23,10 @@ class UserDetailView(generic.DetailView):
 
 # TODO: Generalize Article, Video, Picture create views into CreateItem, then
 # subclass from there
-class CreateArticle(generic.CreateView):
+class CreateArticleView(generic.CreateView):
     model = Article
+    template_name = 'commonplace/edit_article.html'
+    form_class = ArticleForm
 
 # TODO: debug failure on anonymous user login
 def my_items(request):
