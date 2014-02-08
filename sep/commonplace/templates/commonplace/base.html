@@ -22,11 +22,19 @@
     </div>
     <div id="sidebar">
       {% block sidebar %}
-      Navigation: <a href="{% url 'index' %}">Latest Items</a> <a href="{% url 'my_items' %}">My Items</a>
+      Navigation:&nbsp;
+      <a href="{% url 'index' %}">Latest Items</a>&nbsp;
+      <a href="{% url 'my_items' %}">My Items</a>&nbsp;
+      <a href="{% url 'create_article' %}">Submit Article</a>&nbsp;
       {% endblock %}
     </div>
+    <hr><br />
     <div id="content">
       {% block content %}{% endblock %}
+    </div><br />
+    <hr>
+    <div id="footer">
+      <span style="font-size:.7em; text-align:center">Commonplace Copyright 2014 Clayton Gotwals, Adam Rea, Austin Sims and Kishen Sivalingam.  All rights reserved.  Content presented on Commonplace is property of their respective owners and not owned by Commonplace.</span>
     </div>
   </body>
 </html>

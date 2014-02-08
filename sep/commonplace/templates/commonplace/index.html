@@ -7,7 +7,7 @@
 {% if latest_items %}
 	<ul>
 	{% for item in latest_items %}
-		<li><a href="{% url 'detail' item.id %}">{{ item.title }}</a></li>
+		<li><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></li>
 	{% endfor %}
 	</ul>
 {% else %}

@@ -1,8 +1,10 @@
 from django.http import HttpResponse, Http404
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 
-from commonplace.models import Item, Category
+from commonplace.models import Article, Video, Picture, Item, Category
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 # Front page; right now, just list latest ten items
 def index(request):
@@ -10,20 +12,17 @@ def index(request):
     context = {'latest_items' : latest_items}
     return render(request, 'commonplace/index.html', context)
 
-# # View details of an item
-# def detail(request, item_id):
-#     try:
-#         item = Item.objects.get(pk=item_id)
-#     except Item.DoesNotExist:
-#         raise Http404
-#     return render(request, 'commonplace/detail.html', {
-#             'item' : item,
-#             'category_list' : item.categories.all(),
-#             })
-
-class DetailView(generic.DetailView):
+class ItemDetailView(generic.DetailView):
     model = Item
-#    template_name = 'commonplace/item_detail.html'
+
+class UserDetailView(generic.DetailView):
+    model = User
+    template_name = 'commonplace/user_detail.html'
+
+# TODO: Generalize Article, Video, Picture create views into CreateItem, then
+# subclass from there
+class CreateArticle(generic.CreateView):
+    model = Article
 
 # TODO: debug failure on anonymous user login
 def my_items(request):
@@ -35,13 +34,25 @@ def my_items(request):
     return render(request, 'commonplace/my_items.html', context)
 
 # View items in a certain category
-def category(request, category_name):
+def items_by_category(request, category_name):
     try:
         cat = Category.objects.get(name=category_name)
         items = cat.item_set.all()
     except Category.DoesNotExist:
         raise Http404
-    return render(request, 'commonplace/category.html', {
+    return render(request, 'commonplace/items_by_category.html', {
             'category' : cat,
+            'items' : items,
+            })
+
+# View items by a certain user
+def items_by_user(request, user_name):
+    try:
+        user = User.objects.get(username=user_name)
+        items = user.item_set.all()
+    except User.DoesNotExist:
+        raise Http404
+    return render(request, 'commonplace/items_by_user.html', {
+            'user' : user,
             'items' : items,
             })
