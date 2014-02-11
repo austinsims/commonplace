@@ -10,10 +10,10 @@ class Category(models.Model):
         return self.name
 
 class Item(models.Model):
-    creation_date = models.DateTimeField('date created')
+    creation_date = models.DateTimeField('date created', auto_now_add=True)
     title = models.CharField(max_length=400)
     description = models.CharField(max_length=2000)
-    url = models.CharField(max_length=2000)
+    url = models.URLField(max_length=2000, unique=True) # don't let two users submit same item
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     categories = models.ManyToManyField(Category)
     def __unicode__(self):

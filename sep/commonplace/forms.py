@@ -15,8 +15,4 @@ class ArticleForm(forms.ModelForm):
     
     class Meta:
         model = Article
-
-    def __init__(self, *args, **kwargs):
-        if kwargs.get('instance'):
-            url = kwargs['instance'].url
-        return super(ArticleForm, self).__init__(*args, **kwargs)
+        exclude = ['creation_date', 'user', 'title', 'fulltext']
