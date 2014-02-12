@@ -1,0 +1,8 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
+{% load staticfiles %}
+<p>{{ message }}</p>
+<img src="{% static 'commonplace/okay.png' %}" alt="Okay Guy" />
+<p><input type="button" value="Okay..." onClick="history.go(-1); return true;" /></p>
+{% endblock %}

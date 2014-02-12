@@ -1,0 +1,8 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
+{% for item in object_list %}
+{{ item.title }}
+{% if item %} item is article {% endif %}<br />
+{% endfor %}
+{% endblock %}

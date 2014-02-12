@@ -4,17 +4,28 @@
 <p>Here is a list of items you've submitted</p>
 
 {% if my_items %}
-	<ul>
+<table border=1>
+  <tr>
+    <th>Title</th>
+    <th>Actions</th>
+  </tr>
 	{% for item in my_items %}
-		<li><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></li>
+	<tr>
+      <td><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></td>
+      <td>
+        <a href="{% url 'item_delete' item.id %}">Delete</a>&nbsp;
+        <!-- TODO: this only works for articles... -->
+        <a href="{% url 'article_update' item.id %}">Edit</a>&nbsp;
+      </td>
+    </tr>
 	{% endfor %}
-	</ul>
+</table>
 {% else %}
-    {% if user.is_authenticated %}
-		<p>No items available.</p>
-    {% endif %}
-    {% if not user.is_authenticated %}
-        <p>You are not logged in!</p>
-	{% endif %}
+{% if user.is_authenticated %}
+<p>No items available.</p>
+{% endif %}
+{% if not user.is_authenticated %}
+<p>You are not logged in!</p>
+{% endif %}
 {% endif %}
 {% endblock %}

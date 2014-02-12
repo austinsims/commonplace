@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<h1>User {{ user.username }}</h1>
+<h1>{{ user.first_name }} {{ user.last_name }}</h1>
 
-<p><a href="{% url 'items_by_user' user.username %}">View submissions by this user</a></p>
+<p><a href="{% url 'items_by_user' user.pk %}">View submissions by this user</a></p>
 
 {% endblock %}

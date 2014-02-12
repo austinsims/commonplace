@@ -1,0 +1,10 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  Are you sure you want to delete "{{ item.title }}"? <br />
+  <input type="submit" value="Yes" />
+  <input type="button" value="No" onClick="history.go(-1); return true;" />
+</form>
+{% endblock %}

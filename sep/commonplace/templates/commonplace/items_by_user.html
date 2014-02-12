@@ -1,7 +1,7 @@
 {% extends "commonplace/base.html" %}
 
 {% block content %}
-<h1>Items by user {{ user.username }}</h1>
+<h1>Items by {{ user.first_name }} {{ user.last_name }}</h1>
 <ul>
   {% for item in items %}
   <li><a href="/item/{{ item.id  }}">{{ item.title }}</a></li>

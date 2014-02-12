@@ -22,11 +22,16 @@ urlpatterns = patterns('',
 
     # Commonplace URLs
     url(r'^$', views.index, name='index'),
-    url(r'^item/(?P<pk>\d+)?/$', views.ItemDetailView.as_view(), name='item_detail'),
+    url(r'^list/?', views.ItemListView.as_view(), name='item_list'),
     url(r'^create/article', views.submit_article, name='create_article'),
-    url(r'^category/(?P<category_name>\w+)?/$', views.items_by_category, name='items_by_category'),
-    url(r'^user/(?P<user_name>\w+)/submissions?/$', views.items_by_user, name='items_by_user'),
+    url(r'^create/picture', views.submit_article, name='create_picture'),
+    url(r'^category/(?P<category_name>\w+)$', views.items_by_category, name='items_by_category'),
+    url(r'^user/(?P<pk>\w+)/submissions$', views.items_by_user, name='items_by_user'),
     # TODO: use username instead of pk for user detail URL
-    url(r'^user/(?P<pk>\d+)?/$', views.UserDetailView.as_view(), name='user_detail'),
-    url(r'^my_items?/$', views.my_items, name='my_items'),
+    url(r'^user/(?P<pk>\d+)$', views.user_detail, name='user_detail'),
+    url(r'^article/(?P<pk>\d+)$', views.ArticleDetailView.as_view(), name='article_detail'),
+    url(r'^item/(?P<pk>\d+)$', views.ItemDetailView.as_view(), name='item_detail'),
+    url(r'^my_items$', views.my_items, name='my_items'),
+    url(r'delete/(?P<pk>\d+)$', views.item_delete, name='item_delete'),
+    url(r'update/article/(?P<pk>\d+)$', views.update_article, name='article_update'),
 )

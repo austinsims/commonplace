@@ -10,6 +10,7 @@
 </p>
 <p>Originally from <a href="{{ item.url }}">{{ item.url }}</a></i></p>
 <!-- TODO: use username instead of pk for user detail URL -->
-<p>Submitted by <a href="{%url 'user_detail' item.user.pk %}"> {{ item.user.username }}</a></p>
+<p>Submitted by <a href="{%url 'user_detail' item.user.pk %}"> {{ item.user.first_name }} {{ item.user.last_name }}</a></p>
 <p>{{ item.description }}</p>
+
 {% endblock %}

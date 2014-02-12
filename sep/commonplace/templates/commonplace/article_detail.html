@@ -1,2 +1,16 @@
-{% extends "commonplace/item_detail.html" %}
+{% extends "commonplace/base.html" %}
 
+{% block content %}
+<h1>{{ article.title }}</h1>
+<p>
+  Categories: 
+  {% for c in article.categories.all %}
+      <a href="{% url 'items_by_category' c.name %}">{{ c.name }}</a>
+  {% endfor %}
+</p>
+<p>Originally from <a href="{{ article.url }}">{{ article.url }}</a></i></p>
+<!-- TODO: use username instead of pk for user detail URL -->
+<p>Submitted by <a href="{%url 'user_detail' article.user.pk %}"> {{ article.user.first_name }} {{ article.user.last_name }}</a></p>
+<p>{{ article.description }}</p>
+<div style="border:1px solid black; margin:3em; padding:1em; width:60%">{{ article.fulltext |safe }}</div>
+{% endblock %}
