@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Welcome to Commonplace</h1>
-<p>Here is a list of some of our most recently submitted articles</p>
+<h2>Latest articles</h2>
 
 {% if latest_articles %}
 	<ul>
@@ -13,4 +13,17 @@
 {% else %}
 	<p>No articles available.</p>
 {% endif %}
+
+<h2>Latest pictures</h2>
+
+{% if latest_pictures %}
+	<ul>
+	{% for picture in latest_pictures %}
+		<li><a href="{% url 'picture_detail' picture.id %}">{{ picture.title }}</a></li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p>No pictures available.</p>
+{% endif %}
+
 {% endblock %}

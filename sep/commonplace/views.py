@@ -35,17 +35,25 @@ def make_thumbnail(url, size):
 # Front page; right now, just list latest ten items
 def index(request):
     latest_articles = Article.objects.order_by('-creation_date')[:10]
-    context = {'latest_articles' : latest_articles}
+    latest_pictures = Picture.objects.order_by('-creation_date')[:10]
+    context = {
+        'latest_articles' : latest_articles,
+        'latest_pictures' : latest_pictures
+        }
     return render(request, 'commonplace/index.html', context)
 
 # TODO: debug failure on anonymous user login
 def my_items(request):
     if request.user.is_authenticated():
-        mine = Item.objects.filter(user=request.user)
-        context = { 'my_items' : mine }
+        my_articles = Article.objects.filter(user=request.user)
+        my_pictures = Picture.objects.filter(user=request.user)
+        context = { 
+            'my_articles' : my_articles,
+            'my_pictures' : my_pictures,
+            }
+        return render(request, 'commonplace/my_items.html', context)
     else:
-        context = dict()
-    return render(request, 'commonplace/my_items.html', context)
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t logged in!'})
 
 # View items in a certain category
 def items_by_category(request, category_name):
@@ -181,9 +189,8 @@ def submit_picture(request):
                 url = form.cleaned_data['url']
                 try:
                     # TODO: Generate a thumbnail. May throw NotAPictureError
-                    import pdb; pdb.set_trace()
                     thumbnail = make_thumbnail(url, (256,256))
-                except NameError: # caught if PIL couldn't load the thumbnail for whatever reason
+                except IOError: # caught if PIL couldn't load the thumbnail for whatever reason
                     # TODO: Make a template for this error message and render it
                     return render(request, 'commonplace/error.html', {'message' : 'Sorry, the picture at your URL %s does not exist!' % url})
 

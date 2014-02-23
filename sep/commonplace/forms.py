@@ -36,6 +36,20 @@ class PictureForm(forms.ModelForm):
     # fields: description, url, categories
     # generated: title, user, date created, thumbnail.
 
+    def __init__(self, *args, **kwargs):
+        super(PictureForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        # Set URL read only if editing existing Picture
+        if instance is not None and instance.pk is not None:
+            self.fields['url'].widget.attrs['readonly'] = True
+
+        def clean_url(self):
+            instance = getattr(self, 'instance', None)
+            if instance is not None and instance.pk is not None:
+                return instance.url
+            else:
+                return self.cleaned_data['url']
+
     url = forms.URLField(
         label='URL',
         required=True,
