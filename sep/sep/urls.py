@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     url(r'^list/?', views.ItemListView.as_view(), name='item_list'),
     url(r'^category/(?P<category_name>\w+)$', views.items_by_category, name='items_by_category'),
     url(r'^user/(?P<pk>\w+)/submissions$', views.items_by_user, name='items_by_user'),
-    url(r'^item/(?P<pk>\d+)$', views.ItemDetailView.as_view(), name='item_detail'),
+    url(r'^item/(?P<pk>\d+)$', views.item_detail, name='item_detail'),
     url(r'^my_items$', views.my_items, name='my_items'),
     url(r'delete/(?P<pk>\d+)$', views.item_delete, name='item_delete'),
     # TODO: use username instead of pk for user detail URL

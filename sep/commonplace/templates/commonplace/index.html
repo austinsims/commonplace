@@ -38,4 +38,17 @@
 	<p>No videos available.</p>
 {% endif %}
 
+<h2>Latest items</h2>
+
+{% if latest_items %}
+	<ul>
+	{% for item in latest_items %}
+		<li><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p>No items available.</p>
+{% endif %}
+
 {% endblock %}
+

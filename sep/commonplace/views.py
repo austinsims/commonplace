@@ -38,10 +38,12 @@ def index(request):
     latest_articles = Article.objects.order_by('-creation_date')[:10]
     latest_pictures = Picture.objects.order_by('-creation_date')[:10]
     latest_videos = Video.objects.order_by('-creation_date')[:10]
+    latest_items = Item.objects.order_by('-creation_date')[:10]
     context = {
         'latest_articles' : latest_articles,
         'latest_pictures' : latest_pictures,
         'latest_videos' : latest_videos,
+        'latest_items' : latest_items,
         }
     return render(request, 'commonplace/index.html', context)
 
@@ -101,8 +103,18 @@ class ItemDetailView(generic.DetailView):
     model = Item
 
 def item_detail(self, pk):
-    #not yet implemented...
-    pass
+    item = get_object_or_404(Item, pk=pk)
+    if hasattr(item,'article'):
+        article = Article.objects.get(pk=item.pk)
+        return render(self, 'commonplace/article_detail.html', {'article' : Article.objects.get(pk=item.pk)})
+    elif hasattr(item,'picture'):
+        picture = Picture.objects.get(pk=item.pk)
+        return render(self, 'commonplace/picture_detail.html', {'picture' : Picture.objects.get(pk=item.pk)})
+    elif hasattr(item,'video'):
+        video = Video.objects.get(pk=item.pk)
+        return render(self, 'commonplace/video_detail.html', {'video' : Video.objects.get(pk=item.pk)})
+    else:
+        return HttpResponse('It\'s something else!')
 
 def item_delete(request, pk):
     item = get_object_or_404(Item, pk=pk)
