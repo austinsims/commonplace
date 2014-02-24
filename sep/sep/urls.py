@@ -34,4 +34,5 @@ urlpatterns = patterns('',
     url(r'^my_items$', views.my_items, name='my_items'),
     url(r'delete/(?P<pk>\d+)$', views.item_delete, name='item_delete'),
     url(r'update/article/(?P<pk>\d+)$', views.update_article, name='article_update'),
+    url(r'^search/items', views.search_items, name='search_items'),
 )

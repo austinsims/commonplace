@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.utils import timezone
+from django.db.models import Q
 
 from readability.readability import Document as ReadableDocument
 import urllib
@@ -179,3 +180,29 @@ def items_by_user(request, pk):
             'items' : items,
             'something' : 'blah',
             })
+
+# View search results matching the specified search string.
+def search_items(request):
+    if request.method == 'POST':
+        
+        # Obtain user input for search string from POST data.
+        search_string = request.POST.get('search_string')
+        
+        # Query for a list of matching items.
+        items = Item.objects.filter(Q(title__icontains=search_string) | Q(description__icontains=search_string))
+        
+        # Build list of dictionaries that hold each item and their type (Article, Picture, or Video).
+        items_with_types = []
+        for item in items:
+            items_with_types.append({ 'item' : item })
+            if Article.objects.get(pk=item.pk):
+                items_with_types[-1]['type'] = 'article'
+            elif Picture.objects.get(pk=item.pk):
+                items_with_types[-1]['type'] = 'picture'
+            elif Video.objects.get(pk=item.pk):
+                items_with_types[-1]['type'] = 'video'
+        
+        # Return search results.    
+        return render(request, 'commonplace/search_results.html', {
+            'search_string' : search_string,
+            'items_with_types' : items_with_types, })

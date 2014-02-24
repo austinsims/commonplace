@@ -29,6 +29,15 @@
       <a href="{% url 'create_picture' %}">Submit Picture</a>&nbsp;
       {% endblock %}
     </div>
+    <div id="searchbar">
+      {% block searchbar %}
+        <form action="{% url 'search_items' %}" method="post">{% csrf_token %}
+          Search items:
+          <input type="text" name="search_string">
+          <input type="submit" value="Search">
+        </form>
+      {% endblock %}
+    </div>
     <hr><br />
     <div id="content">
       {% block content %}{% endblock %}

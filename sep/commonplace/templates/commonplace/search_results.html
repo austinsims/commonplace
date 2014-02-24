@@ -1,0 +1,18 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
+  <h1>Search results for '{{ search_string }}'</h1>
+  {% if items_with_types %}
+    <ul>
+      {% for item_with_type in items_with_types %}
+        <li>
+          <a href="/{{ item_with_type.type }}/{{ item_with_type.item.id }}">
+            {{ item_with_type.item.title }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <i>Your search returned no results.</i>
+  {% endif %}
+{% endblock %}
