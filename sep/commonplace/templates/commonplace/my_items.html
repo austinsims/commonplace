@@ -1,71 +1,28 @@
 {% extends "commonplace/base.html" %}
 
 {% block content %}
-<h2>Articles</h2>
 
-{% if my_articles %}
+<h2>Items</h2>
+
+{% if my_items %}
 <table border=1>
   <tr>
     <th>Title</th>
     <th>Actions</th>
   </tr>
-	{% for article in my_articles %}
+	{% for item in my_items %}
 	<tr>
-      <td><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></td>
+      <td><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></td>
       <td>
-        <a href="{% url 'item_delete' article.id %}">Delete</a>&nbsp;
-        <a href="{% url 'article_update' article.id %}">Edit</a>&nbsp;
+        <a href="{% url 'item_delete' item.id %}">Delete</a>&nbsp;
+        <a href="{% url 'item_update' item.id %}">Edit</a>&nbsp;
       </td>
     </tr>
 	{% endfor %}
 </table>
 
 {% else %}
-<p>No articles available.</p>
-{% endif %}
-
-<h2>Pictures</h2>
-{% if my_pictures %}
-<table border=1>
-  <tr>
-    <th>Title</th>
-    <th>Actions</th>
-  </tr>
-	{% for picture in my_pictures %}
-	<tr>
-      <td><a href="{% url 'picture_detail' picture.id %}">{{ picture.title }}</a></td>
-      <td>
-        <a href="{% url 'item_delete' picture.id %}">Delete</a>&nbsp;
-        <a href="{% url 'picture_update' picture.id %}">Edit</a>&nbsp;
-      </td>
-    </tr>
-	{% endfor %}
-</table>
-{% else %}
-<p>No pictures available.</p>
-{% endif %}
-
-<h2>Videos</h2>
-
-{% if my_videos %}
-<table border=1>
-  <tr>
-    <th>Title</th>
-    <th>Actions</th>
-  </tr>
-	{% for video in my_videos %}
-	<tr>
-      <td><a href="{% url 'video_detail' video.id %}">{{ video.title }}</a></td>
-      <td>
-        <a href="{% url 'item_delete' video.id %}">Delete</a>&nbsp;
-        <a href="{% url 'video_update' video.id %}">Edit</a>&nbsp;
-      </td>
-    </tr>
-	{% endfor %}
-</table>
-
-{% else %}
-<p>No videos available.</p>
+<p>No items available.</p>
 {% endif %}
 
 {% endblock %}

@@ -35,14 +35,8 @@ def make_thumbnail(url, size):
 
 # Front page; right now, just list latest ten items
 def index(request):
-    latest_articles = Article.objects.order_by('-creation_date')[:10]
-    latest_pictures = Picture.objects.order_by('-creation_date')[:10]
-    latest_videos = Video.objects.order_by('-creation_date')[:10]
     latest_items = Item.objects.order_by('-creation_date')[:10]
     context = {
-        'latest_articles' : latest_articles,
-        'latest_pictures' : latest_pictures,
-        'latest_videos' : latest_videos,
         'latest_items' : latest_items,
         }
     return render(request, 'commonplace/index.html', context)
@@ -50,17 +44,25 @@ def index(request):
 # TODO: debug failure on anonymous user login
 def my_items(request):
     if request.user.is_authenticated():
-        my_articles = Article.objects.filter(user=request.user)
-        my_pictures = Picture.objects.filter(user=request.user)
-        my_videos = Video.objects.filter(user=request.user)
+        my_items = Item.objects.filter(user=request.user)
         context = { 
-            'my_articles' : my_articles,
-            'my_pictures' : my_pictures,
-            'my_videos' : my_videos,
+            'my_items' : my_items,
             }
         return render(request, 'commonplace/my_items.html', context)
     else:
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t logged in!'})
+
+def item_update(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    if hasattr(item,'article'):
+        return redirect(update_article, pk=item.pk)
+    elif hasattr(item,'picture'):
+        return redirect(update_picture, pk=item.pk)
+    elif hasattr(item,'video'):
+        return redirect(update_video, pk=item.pk)
+    else:
+        return HttpResponse('It\'s something else!')
+
 
 # View items in a certain category
 def items_by_category(request, category_name):
@@ -128,9 +130,6 @@ def item_delete(request, pk):
 
 # Article views
 
-class ArticleDetailView(generic.DetailView):
-    model = Article
-
 def update_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
     if request.user.pk is article.user.pk:
@@ -184,9 +183,6 @@ def submit_article(request):
                 })
 
 # Picture views
-
-class PictureDetailView(generic.DetailView):
-    model = Picture
 
 def submit_picture(request):
     if not request.user.is_authenticated():
@@ -302,9 +298,6 @@ def update_picture(request, pk):
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
 
 # Video views
-
-class VideoDetailView(generic.DetailView):
-    model = Video
 
 def submit_video(request):
     if not request.user.is_authenticated():
