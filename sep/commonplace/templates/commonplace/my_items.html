@@ -45,4 +45,27 @@
 <p>No pictures available.</p>
 {% endif %}
 
+<h2>Videos</h2>
+
+{% if my_videos %}
+<table border=1>
+  <tr>
+    <th>Title</th>
+    <th>Actions</th>
+  </tr>
+	{% for video in my_videos %}
+	<tr>
+      <td><a href="{% url 'video_detail' video.id %}">{{ video.title }}</a></td>
+      <td>
+        <a href="{% url 'item_delete' video.id %}">Delete</a>&nbsp;
+        <a href="{% url 'video_update' video.id %}">Edit</a>&nbsp;
+      </td>
+    </tr>
+	{% endfor %}
+</table>
+
+{% else %}
+<p>No videos available.</p>
+{% endif %}
+
 {% endblock %}

@@ -26,4 +26,16 @@
 	<p>No pictures available.</p>
 {% endif %}
 
+<h2>Latest videos</h2>
+
+{% if latest_videos %}
+	<ul>
+	{% for video in latest_videos %}
+		<li><a href="{% url 'video_detail' video.id %}">{{ video.title }}</a></li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p>No videos available.</p>
+{% endif %}
+
 {% endblock %}

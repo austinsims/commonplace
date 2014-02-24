@@ -41,6 +41,10 @@ urlpatterns = patterns('',
     url(r'^create/picture', views.submit_picture, name='create_picture'),
     url(r'^picture/(?P<pk>\d+)$', views.PictureDetailView.as_view(), name='picture_detail'),
     url(r'update/picture/(?P<pk>\d+)$', views.update_picture, name='picture_update'),
+    # Video URLs
+    url(r'^create/video', views.submit_video, name='create_video'),
+    url(r'^video/(?P<pk>\d+)$', views.VideoDetailView.as_view(), name='video_detail'),
+    url(r'update/video/(?P<pk>\d+)$', views.update_video, name='video_update'),
 )
 
 urlpatterns += staticfiles_urlpatterns()

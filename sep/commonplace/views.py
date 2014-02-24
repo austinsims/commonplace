@@ -5,9 +5,10 @@ from django.views import generic
 from django.utils import timezone
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-# For making thumbnails
+# For making thumbnails & screenshots
 from PIL import Image, ImageOps
 from cStringIO import StringIO
+import gdata.youtube.service
 
 # For making article summaries
 from readability.readability import Document as ReadableDocument
@@ -36,9 +37,11 @@ def make_thumbnail(url, size):
 def index(request):
     latest_articles = Article.objects.order_by('-creation_date')[:10]
     latest_pictures = Picture.objects.order_by('-creation_date')[:10]
+    latest_videos = Video.objects.order_by('-creation_date')[:10]
     context = {
         'latest_articles' : latest_articles,
-        'latest_pictures' : latest_pictures
+        'latest_pictures' : latest_pictures,
+        'latest_videos' : latest_videos,
         }
     return render(request, 'commonplace/index.html', context)
 
@@ -47,9 +50,11 @@ def my_items(request):
     if request.user.is_authenticated():
         my_articles = Article.objects.filter(user=request.user)
         my_pictures = Picture.objects.filter(user=request.user)
+        my_videos = Video.objects.filter(user=request.user)
         context = { 
             'my_articles' : my_articles,
             'my_pictures' : my_pictures,
+            'my_videos' : my_videos,
             }
         return render(request, 'commonplace/my_items.html', context)
     else:
@@ -224,6 +229,124 @@ def update_picture(request, pk):
         return render(request, template_name, {'form' : form})
     else:
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
+
+# Picture views
+
+class PictureDetailView(generic.DetailView):
+    model = Picture
+
+def submit_picture(request):
+    if not request.user.is_authenticated():
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
+    else:
+        if request.method == 'GET':
+            form = PictureForm()
+        else:
+            # POST request: handle form upload.
+            form = PictureForm(request.POST) # bind data from request
+
+            # If data is valid, create article and redirect
+            if form.is_valid():
+
+                # Retrieve short title and readable text
+                # TODO: Scan a webpage for images instead of requiring direct link to image.
+                url = form.cleaned_data['url']
+                try:
+                    # TODO: Generate a thumbnail. May throw NotAPictureError
+                    thumbnail = make_thumbnail(url, (256,256))
+                except IOError: # caught if PIL couldn't load the thumbnail for whatever reason
+                    # TODO: Make a template for this error message and render it
+                    return render(request, 'commonplace/error.html', {'message' : 'Sorry, the picture at your URL %s does not exist!' % url})
+
+                picture = form.save(commit=False)
+
+                # Deal with the thumbnail
+                temp_handle = StringIO()
+                thumbnail.save(temp_handle, 'JPEG')
+                temp_handle.seek(0)
+                # Save image to a SimpleUploadedFile which can be saved into an ImageField
+                suf = SimpleUploadedFile(os.path.split(url)[-1], temp_handle.read(), content_type='JPEG')
+                picture.thumbnail = suf
+                picture.user = request.user
+                picture.save()
+                form.save_m2m()
+
+                return HttpResponseRedirect(reverse('picture_detail', kwargs={'pk' : picture.pk}))
+
+    return render(request, 'commonplace/edit_picture.html', {
+            'form' : form,
+            })
+
+def update_picture(request, pk):
+    picture = get_object_or_404(Picture, pk=pk)
+    if request.user.pk is picture.user.pk:
+        form = PictureForm(request.POST or None, instance=picture)
+        if form.is_valid():
+            form.save()
+            return redirect('my_items')
+        template_name = 'commonplace/edit_picture.html'
+        return render(request, template_name, {'form' : form})
+    else:
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
+
+# Video views
+
+class VideoDetailView(generic.DetailView):
+    model = Video
+
+def submit_video(request):
+    if not request.user.is_authenticated():
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
+    else:
+        if request.method == 'GET':
+            form = VideoForm()
+        else:
+            # POST request: handle form upload.
+            form = VideoForm(request.POST) # bind data from request
+
+            # If data is valid, create article and redirect
+            if form.is_valid():
+
+                # Retrieve short title and readable text
+                # TODO: Scan a webpage for images instead of requiring direct link to image.
+                url = form.cleaned_data['url']
+
+                video = form.save(commit=False)
+
+                # Save image to a SimpleUploadedFile which can be saved into an ImageField
+                if 'youtube.com/watch?v=' in url:
+                    video_id = url.split('?v=')[-1]
+                    yt = gdata.youtube.service.YouTubeService()
+                    entry = yt.GetYouTubeVideoEntry(video_id=video_id)
+                    thumb_url = entry.media.thumbnail[0].url
+                    screenshot = make_thumbnail(thumb_url, (256,256))
+                    temp_handle = StringIO()
+                    screenshot.save(temp_handle, 'JPEG')
+                    temp_handle.seek(0)
+                    suf = SimpleUploadedFile(os.path.split(url)[-1], temp_handle.read(), content_type='JPEG')
+                    video.screenshot = suf
+                video.user = request.user
+                video.save()
+                form.save_m2m()
+
+                return HttpResponseRedirect(reverse('video_detail', kwargs={'pk' : video.pk}))
+
+    return render(request, 'commonplace/edit_video.html', {
+            'form' : form,
+            })
+
+def update_video(request, pk):
+    video = get_object_or_404(Video, pk=pk)
+    if request.user.pk is video.user.pk:
+        form = VideoForm(request.POST or None, instance=video)
+        if form.is_valid():
+            form.save()
+            return redirect('my_items')
+        template_name = 'commonplace/edit_video.html'
+        return render(request, template_name, {'form' : form})
+    else:
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
+
 
 # User views
 
