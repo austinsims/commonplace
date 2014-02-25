@@ -2,12 +2,12 @@
 
 {% block content %}
   <h1>Search results for '{{ search_string }}'</h1>
-  {% if items_with_types %}
+  {% if items %}
     <ul>
-      {% for item_with_type in items_with_types %}
+      {% for item in items %}
         <li>
-          <a href="/{{ item_with_type.type }}/{{ item_with_type.item.id }}">
-            {{ item_with_type.item.title }}
+          <a href="/item/{{ item.id }}">
+            {{ item.title }}
           </a>
         </li>
       {% endfor %}
