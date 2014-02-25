@@ -1,0 +1,16 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
+<h1>{{ picture.title }}</h1>
+<p>
+  Categories: 
+  {% for c in picture.categories.all %}
+      <a href="{% url 'items_by_category' c.name %}">{{ c.name }}</a>
+  {% endfor %}
+</p>
+<p>Originally from <a href="{{ picture.url }}">{{ picture.url }}</a></i></p>
+<!-- TODO: use username instead of pk for user detail URL -->
+<p>Submitted by <a href="{%url 'user_detail' picture.user.pk %}"> {{ picture.user.first_name }} {{ picture.user.last_name }}</a></p>
+<p>{{ picture.description }}</p>
+<!-- TODO: show the picture here -->
+{% endblock %}

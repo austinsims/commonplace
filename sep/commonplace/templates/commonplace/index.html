@@ -2,15 +2,17 @@
 
 {% block content %}
 <h1>Welcome to Commonplace</h1>
-<p>Here is a list of some of our most recently submitted articles</p>
+<h2>Latest items</h2>
 
-{% if latest_articles %}
+{% if latest_items %}
 	<ul>
-	{% for article in latest_articles %}
-		<li><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></li>
+	{% for item in latest_items %}
+		<li><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></li>
 	{% endfor %}
 	</ul>
 {% else %}
-	<p>No articles available.</p>
+	<p>No items available.</p>
 {% endif %}
+
 {% endblock %}
+
