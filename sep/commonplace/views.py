@@ -350,8 +350,19 @@ def search_items(request):
         # Obtain user input for search string from POST data.
         search_string = request.POST.get('search_string')
         
-        # Query for a list of matching items.
-        items = Item.objects.filter(Q(title__icontains=search_string) | Q(description__icontains=search_string))
+        # Query for a list of matching items based on title or description.
+        items_with_matching_title_or_description = Item.objects.filter(
+            Q(title__icontains=search_string) |
+            Q(description__icontains=search_string))
+        
+        # Query for a list of matching items (which are articles) based on fulltext.
+        pk_list = []
+        for article in Article.objects.filter(fulltext__icontains=search_string):
+            pk_list.append(article.pk)
+        items_with_matching_fulltext = Item.objects.filter(pk__in=pk_list)
+            
+        # Find union of the two querysets
+        items = items_with_matching_title_or_description | items_with_matching_fulltext
         
         # Return search results.    
         return render(request, 'commonplace/search_results.html', {
