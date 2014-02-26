@@ -195,6 +195,7 @@ def submit_article(request):
 # Picture views
 
 def submit_picture(request):
+    return HttpResponse('asdf')
     if not request.user.is_authenticated():
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
     else:
@@ -230,6 +231,7 @@ def submit_picture(request):
                 picture.save()
                 form.save_m2m()
 
+                import pdb; pdb.set_trace()
                 # Check for new categories from form
                 new_categories = form.data.get('new_categories')
 
@@ -238,7 +240,8 @@ def submit_picture(request):
                         picture.categories.create(name=cname)
                     picture.save()
                 
-                return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
+                return HttpResponse(new_categories)
+                #return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
 
     return render(request, 'commonplace/edit_picture.html', {
             'form' : form,
@@ -260,6 +263,48 @@ def update_picture(request, pk):
 
 class PictureDetailView(generic.DetailView):
     model = Picture
+
+def submit_picture(request):
+    if not request.user.is_authenticated():
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
+    else:
+        if request.method == 'GET':
+            form = PictureForm()
+        else:
+            # POST request: handle form upload.
+            form = PictureForm(request.POST) # bind data from request
+
+            # If data is valid, create article and redirect
+            if form.is_valid():
+
+                # Retrieve short title and readable text
+                # TODO: Scan a webpage for images instead of requiring direct link to image.
+                url = form.cleaned_data['url']
+                try:
+                    # TODO: Generate a thumbnail. May throw NotAPictureError
+                    thumbnail = make_thumbnail(url, (256,256))
+                except IOError: # caught if PIL couldn't load the thumbnail for whatever reason
+                    # TODO: Make a template for this error message and render it
+                    return render(request, 'commonplace/error.html', {'message' : 'Sorry, the picture at your URL %s does not exist!' % url})
+
+                picture = form.save(commit=False)
+
+                # Deal with the thumbnail
+                temp_handle = StringIO()
+                thumbnail.save(temp_handle, 'JPEG')
+                temp_handle.seek(0)
+                # Save image to a SimpleUploadedFile which can be saved into an ImageField
+                suf = SimpleUploadedFile(os.path.split(url)[-1], temp_handle.read(), content_type='JPEG')
+                picture.thumbnail = suf
+                picture.user = request.user
+                picture.save()
+                form.save_m2m()
+
+                return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
+
+    return render(request, 'commonplace/edit_picture.html', {
+            'form' : form,
+            })
 
 def update_picture(request, pk):
     picture = get_object_or_404(Picture, pk=pk)
