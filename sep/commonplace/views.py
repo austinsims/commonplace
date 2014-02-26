@@ -179,7 +179,7 @@ def submit_article(request):
                 article.save()
                 form.save_m2m()
 
-                return HttpResponseRedirect(reverse('article_detail', kwargs={'pk' : article.pk}))
+                return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
 
         return render(request, 'commonplace/edit_article.html', {
                 'form' : form,
@@ -223,7 +223,7 @@ def submit_picture(request):
                 picture.save()
                 form.save_m2m()
 
-                return HttpResponseRedirect(reverse('picture_detail', kwargs={'pk' : picture.pk}))
+                return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
 
     return render(request, 'commonplace/edit_picture.html', {
             'form' : form,
@@ -282,7 +282,7 @@ def submit_picture(request):
                 picture.save()
                 form.save_m2m()
 
-                return HttpResponseRedirect(reverse('picture_detail', kwargs={'pk' : picture.pk}))
+                return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
 
     return render(request, 'commonplace/edit_picture.html', {
             'form' : form,
@@ -337,7 +337,7 @@ def submit_video(request):
                 video.save()
                 form.save_m2m()
 
-                return HttpResponseRedirect(reverse('video_detail', kwargs={'pk' : video.pk}))
+                return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : video.pk}))
 
     return render(request, 'commonplace/edit_video.html', {
             'form' : form,
