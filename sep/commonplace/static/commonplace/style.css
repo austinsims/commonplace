@@ -1,1 +1,61 @@
 /* God knows what goes in here, good luck */
+* {
+   -webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+   box-sizing: border-box;
+}
+
+body {
+	position: relative;
+	background-color: #87CEEB;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@media screen and (min-width: 600px) {
+    #header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		height: 100px;
+		width: 100%;
+		background-color: #5F626A;
+	}
+
+	#login {
+    	float: left;
+    	width: 25%;
+	}
+
+	#searchbar {
+		position: relative;
+		text-align: right;
+		top: 0;
+		right: 0;
+	}
+
+	#name {
+		margin-left: 25%;
+		margin-right: 25%;
+		text-align: center;
+		font-size: 200%;
+		font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+	}
+
+	#sidebar {
+		float: center;
+    	text-align: center;
+	}
+
+	#content {
+		clear: left;
+		margin-top: 100px;
+	}
+
+	#footer {
+		
+	}
+}
+
+@media screen and (max-width: 599px) {
+	
+}
