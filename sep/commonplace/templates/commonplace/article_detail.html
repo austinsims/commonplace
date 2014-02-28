@@ -5,7 +5,7 @@
 <p>
   Categories: 
   {% for c in article.categories.all %}
-      <a href="{% url 'items_by_category' c.name %}">{{ c.name }}</a>
+  <a href="{% url 'items_by_category' c.name %}">{{ c.name }}</a>
   {% endfor %}
 </p>
 <p>Originally from <a href="{{ article.url }}">{{ article.url }}</a></i></p>

@@ -182,7 +182,8 @@ def submit_article(request):
                     new_categories = form.data.get('new_categories')
                     if new_categories is not None:
                         for cname in new_categories.split(' '):
-                            article.categories.create(name=cname)
+                            if len(cname.strip()) > 0:
+                                article.categories.create(name=cname)
                         article.save()
 
                     return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
