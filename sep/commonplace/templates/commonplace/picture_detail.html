@@ -13,4 +13,12 @@
 <p>Submitted by <a href="{%url 'user_detail' picture.user.pk %}"> {{ picture.user.first_name }} {{ picture.user.last_name }}</a></p>
 <p>{{ picture.description }}</p>
 <img src = "{{ picture.thumbnail.url }}" />
+<div id ="friend1" class= "hiddenDiv">
+	<ul>
+		
+	</ul>
+</div>
+<div class="fb-share-button" data-href="{{picture.url}}" data-type="box_count"></div>
+<div class="fb-comments" data-href="{{ picture.url }}" data-numposts="5" data-colorscheme="light"></div>
+
 {% endblock %}

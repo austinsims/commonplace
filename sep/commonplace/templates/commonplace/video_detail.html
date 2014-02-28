@@ -13,4 +13,6 @@
 <p>Submitted by <a href="{%url 'user_detail' video.user.pk %}"> {{ video.user.first_name }} {{ video.user.last_name }}</a></p>
 <p>{{ video.description }}</p>
 <img src = "{{ video.screenshot.url }}" />
+<div class="fb-share-button" data-href="{{video.url}}" data-type="box_count"></div>
+<div class="fb-comments" data-href="{{ video.url }}" data-numposts="5" data-colorscheme="light"></div>
 {% endblock %}

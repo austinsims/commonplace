@@ -1,61 +1,50 @@
 /* God knows what goes in here, good luck */
-* {
+ {
    -webkit-box-sizing: border-box;
    -moz-box-sizing: border-box;
    box-sizing: border-box;
 }
 
 body {
-	position: relative;
-	background-color: #87CEEB;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
+            margin:50px 0px; padding:0px; /* Need to set body margin and padding to get consistency between browsers. */
+            text-align:center; /* Hack for IE5/Win */
+            background-color:#000;
+            color: #333333;
+            direction: ltr;
+            font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+            font-size: 11px;
+        }
+        #footer {
+            height: 80px;
+        }
 
-@media screen and (min-width: 600px) {
-    #header {
-		position: fixed;
-		top: 0;
-		left: 0;
-		height: 100px;
-		width: 100%;
-		background-color: #5F626A;
-	}
+        #sidebar{
+        	font-size:16px;
+        }
+        #name{
+        	font-size: 20px;
+        }
+        .content {
+            width:600px;
+            margin:0px auto; /* Right and left margin widths set to "auto" */
+            text-align:left; /* Counteract to IE5/Win Hack */
+            padding:15px;
+            border:1px solid #333;
+            background-color:white;
+        }
+        h2 {
+            line-height: 20px;
+            min-height: 20px;
+            padding-bottom: 2px;
+            vertical-align: bottom;
+            color: #1C2A47;
+            font-size: 16px;
+        }
+        a {
+            color: #3B5998;
+            cursor: pointer;
+            text-decoration: none;
+        }
+}     
 
-	#login {
-    	float: left;
-    	width: 25%;
-	}
-
-	#searchbar {
-		position: relative;
-		text-align: right;
-		top: 0;
-		right: 0;
-	}
-
-	#name {
-		margin-left: 25%;
-		margin-right: 25%;
-		text-align: center;
-		font-size: 200%;
-		font-family: Copperplate, "Copperplate Gothic Light", fantasy;
-	}
-
-	#sidebar {
-		float: center;
-    	text-align: center;
-	}
-
-	#content {
-		clear: left;
-		margin-top: 100px;
-	}
-
-	#footer {
-		
-	}
-}
-
-@media screen and (max-width: 599px) {
-	
-}
+       

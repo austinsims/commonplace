@@ -86,3 +86,12 @@ class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
         exclude = ['creation_date', 'user', 'screenshot']
+
+
+class AddCategory(forms.ModelForm):
+    
+    def __init__(self,*args, **kwargs):
+        super(AddCategory,self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+    class Meta:
+        model = Category

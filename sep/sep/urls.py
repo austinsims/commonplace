@@ -46,6 +46,12 @@ urlpatterns = patterns('',
     # Video URLs
     url(r'^create/video', views.submit_video, name='create_video'),
     url(r'update/video/(?P<pk>\d+)$', views.update_video, name='video_update'),
+
+
+
+    
+
+
 )
 
 urlpatterns += staticfiles_urlpatterns()

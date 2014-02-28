@@ -13,4 +13,8 @@
 <p>Submitted by <a href="{%url 'user_detail' article.user.pk %}"> {{ article.user.first_name }} {{ article.user.last_name }}</a></p>
 <p>{{ article.description }}</p>
 <div style="border:1px solid black; margin:3em; padding:1em; width:60%">{{ article.fulltext |safe }}</div>
+
+<div class="fb-share-button" data-href="{{article.url}}" data-type="button"></div>
+<div class="fb-comments" data-href="{{ picture.url }}" data-numposts="5" data-colorscheme="light"></div>
+
 {% endblock %}

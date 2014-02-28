@@ -46,14 +46,14 @@ def index(request):
 
 # TODO: debug failure on anonymous user login
 def my_items(request):
-    if request.user.is_authenticated():
+   # if request.user.is_authenticated():
         my_items = Item.objects.filter(user=request.user)
         context = { 
             'my_items' : my_items,
             }
         return render(request, 'commonplace/my_items.html', context)
-    else:
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t logged in!'})
+  #  else:
+  #      return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t logged in!'})
 
 def item_update(request, pk):
     item = get_object_or_404(Item, pk=pk)
@@ -146,42 +146,42 @@ def update_article(request, pk):
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
 
 def submit_article(request):
-    if not request.user.is_authenticated():
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
+  #  if not request.user.is_authenticated():
+  #      return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
+  #  else:
+    if request.method == 'GET':
+        form = ArticleForm()
     else:
-        if request.method == 'GET':
-            form = ArticleForm()
-        else:
-            # POST request: handle form upload.
-            form = ArticleForm(request.POST) # bind data from request
+        # POST request: handle form upload.
+        form = ArticleForm(request.POST) # bind data from request
 
-            # If data is valid, create article and redirect
-            if form.is_valid():
+        # If data is valid, create article and redirect
+        if form.is_valid():
 
-                # Retrieve short title and readable text
-                url = form.cleaned_data['url']
-                try:
-                    html = urllib.urlopen(url).read()
-                except IOError:
-                    # TODO: Make a template for this error message and render it
-                    return HttpResponse('Sorry, the webpage at your URL %s does not exist!' % url)
-                    return render(request, 'commonplace/error.html', {'message' : 'Sorry, the webpage at your URL %s does not exist!' % url})
+            # Retrieve short title and readable text
+            url = form.cleaned_data['url']
+            try:
+                html = urllib.urlopen(url).read()
+            except IOError:
+                # TODO: Make a template for this error message and render it
+                return HttpResponse('Sorry, the webpage at your URL %s does not exist!' % url)
+                return render(request, 'commonplace/error.html', {'message' : 'Sorry, the webpage at your URL %s does not exist!' % url})
 
-                doc = ReadableDocument(html)
-                summary = doc.summary()
-                summary = re.sub(r'</?html>','', summary)
-                summary = re.sub(r'</?body>','', summary)
-                article = form.save(commit=False)
+            doc = ReadableDocument(html)
+            summary = doc.summary()
+            summary = re.sub(r'</?html>','', summary)
+            summary = re.sub(r'</?body>','', summary)
+            article = form.save(commit=False)
 
-                article.title = doc.short_title()
-                article.fulltext = summary
-                article.user = request.user
-                article.save()
-                form.save_m2m()
+            article.title = doc.short_title()
+            article.fulltext = summary
+            article.user = request.user
+            article.save()
+            form.save_m2m()
 
-                return HttpResponseRedirect(reverse('article_detail', kwargs={'pk' : article.pk}))
+            return HttpResponseRedirect(reverse('article_detail', kwargs={'pk' : article.pk}))
 
-        return render(request, 'commonplace/edit_article.html', {
+    return render(request, 'commonplace/edit_article.html', {
                 'form' : form,
                 })
 
@@ -388,4 +388,7 @@ def user_detail(request, pk):
     user = User.objects.get(pk=pk)
     ctx = { 'user' : user }
     return render(request, 'commonplace/user_detail.html', ctx)
+
+# Add new categories
+
 
