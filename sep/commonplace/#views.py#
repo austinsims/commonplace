@@ -46,14 +46,14 @@ def index(request):
 
 # TODO: debug failure on anonymous user login
 def my_items(request):
-   # if request.user.is_authenticated():
+    if request.user.is_authenticated():
         my_items = Item.objects.filter(user=request.user)
         context = { 
             'my_items' : my_items,
             }
         return render(request, 'commonplace/my_items.html', context)
-  #  else:
-  #      return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t logged in!'})
+    else:
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t logged in!'})
 
 def item_update(request, pk):
     item = get_object_or_404(Item, pk=pk)
@@ -157,64 +157,112 @@ def submit_article(request):
 
             # If data is valid, create article and redirect
             if form.is_valid():
-                    # Retrieve short title and readable text
-                    url = form.cleaned_data['url']
-                    try:
-                        html = urllib.urlopen(url).read()
-                    except IOError:
-                        # TODO: Make a template for this error message and render it
-                        return HttpResponse('Sorry, the webpage at your URL %s does not exist!' % url)
-                        return render(request, 'commonplace/error.html', {'message' : 'Sorry, the webpage at your URL %s does not exist!' % url})
-
-                    doc = ReadableDocument(html)
-                    summary = doc.summary()
-                    summary = re.sub(r'</?html>','', summary)
-                    summary = re.sub(r'</?body>','', summary)
-                    article = form.save(commit=False)
-
-                    article.title = doc.short_title()
-                    article.fulltext = summary
-                    article.user = request.user
-                    article.save()
-                    form.save_m2m()
-
-                    # Check for new categories from form
-                    new_categories = form.data.get('new_categories')
-                    if new_categories is not None:
-                        for cname in new_categories.split(' '):
-                            article.categories.create(name=cname)
-                        article.save()
-
-                    return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
 
                 # Retrieve short title and readable text
-            url = form.cleaned_data['url']
-            try:
-                html = urllib.urlopen(url).read()
-            except IOError:
-                # TODO: Make a template for this error message and render it
-                return HttpResponse('Sorry, the webpage at your URL %s does not exist!' % url)
-                return render(request, 'commonplace/error.html', {'message' : 'Sorry, the webpage at your URL %s does not exist!' % url})
+                url = form.cleaned_data['url']
+                try:
+                    html = urllib.urlopen(url).read()
+                except IOError:
+                    # TODO: Make a template for this error message and render it
+                    return HttpResponse('Sorry, the webpage at your URL %s does not exist!' % url)
+                    return render(request, 'commonplace/error.html', {'message' : 'Sorry, the webpage at your URL %s does not exist!' % url})
 
-            doc = ReadableDocument(html)
-            summary = doc.summary()
-            summary = re.sub(r'</?html>','', summary)
-            summary = re.sub(r'</?body>','', summary)
-            article = form.save(commit=False)
+                doc = ReadableDocument(html)
+                summary = doc.summary()
+                summary = re.sub(r'</?html>','', summary)
+                summary = re.sub(r'</?body>','', summary)
+                article = form.save(commit=False)
 
-            article.title = doc.short_title()
-            article.fulltext = summary
-            article.user = request.user
-            article.save()
-            form.save_m2m()
+                article.title = doc.short_title()
+                article.fulltext = summary
+                article.user = request.user
+                article.save()
+                form.save_m2m()
 
-            return HttpResponseRedirect(reverse('article_detail', kwargs={'pk' : article.pk}))
+                # Check for new categories from form
+                new_categories = form.data.get('new_categories')
+                if new_categories is not None:
+                    for cname in new_categories.split(' '):
+                        article.categories.create(name=cname)
+                    article.save()
 
-    return render(request, 'commonplace/edit_article.html', {
+                return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
+
+        return render(request, 'commonplace/edit_article.html', {
                 'form' : form,
                 })
 
 # Picture views
+
+def submit_picture(request):
+    return HttpResponse('asdf')
+    if not request.user.is_authenticated():
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
+    else:
+        if request.method == 'GET':
+            form = PictureForm()
+        else:
+            # POST request: handle form upload.
+            form = PictureForm(request.POST) # bind data from request
+
+            # If data is valid, create article and redirect
+            if form.is_valid():
+
+                # Retrieve short title and readable text
+                # TODO: Scan a webpage for images instead of requiring direct link to image.
+                url = form.cleaned_data['url']
+                try:
+                    # TODO: Generate a thumbnail. May throw NotAPictureError
+                    thumbnail = make_thumbnail(url, (256,256))
+                except IOError: # caught if PIL couldn't load the thumbnail for whatever reason
+                    # TODO: Make a template for this error message and render it
+                    return render(request, 'commonplace/error.html', {'message' : 'Sorry, the picture at your URL %s does not exist!' % url})
+
+                picture = form.save(commit=False)
+
+                # Deal with the thumbnail
+                temp_handle = StringIO()
+                thumbnail.save(temp_handle, 'JPEG')
+                temp_handle.seek(0)
+                # Save image to a SimpleUploadedFile which can be saved into an ImageField
+                suf = SimpleUploadedFile(os.path.split(url)[-1], temp_handle.read(), content_type='JPEG')
+                picture.thumbnail = suf
+                picture.user = request.user
+                picture.save()
+                form.save_m2m()
+
+                import pdb; pdb.set_trace()
+                # Check for new categories from form
+                new_categories = form.data.get('new_categories')
+
+                if new_categories is not None:
+                    for cname in new_categories.split(' '):
+                        picture.categories.create(name=cname)
+                    picture.save()
+                
+                return HttpResponse(new_categories)
+                #return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
+
+    return render(request, 'commonplace/edit_picture.html', {
+            'form' : form,
+            })
+
+def update_picture(request, pk):
+    picture = get_object_or_404(Picture, pk=pk)
+    if request.user.pk is picture.user.pk:
+        form = PictureForm(request.POST or None, instance=picture)
+        if form.is_valid():
+            form.save()
+            return redirect('my_items')
+        template_name = 'commonplace/edit_picture.html'
+        return render(request, template_name, {'form' : form})
+    else:
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
+
+# Picture views
+
+class PictureDetailView(generic.DetailView):
+    model = Picture
 
 def submit_picture(request):
     if not request.user.is_authenticated():
@@ -252,36 +300,11 @@ def submit_picture(request):
                 picture.save()
                 form.save_m2m()
 
-                # Check for new categories from form
-                new_categories = form.data.get('new_categories')
-
-                if new_categories is not None:
-                    for cname in new_categories.split(' '):
-                        picture.categories.create(name=cname)
-                    picture.save()
-                
                 return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
 
     return render(request, 'commonplace/edit_picture.html', {
             'form' : form,
             })
-
-def update_picture(request, pk):
-    picture = get_object_or_404(Picture, pk=pk)
-    if request.user.pk is picture.user.pk:
-        form = PictureForm(request.POST or None, instance=picture)
-        if form.is_valid():
-            form.save()
-            return redirect('my_items')
-        template_name = 'commonplace/edit_picture.html'
-        return render(request, template_name, {'form' : form})
-    else:
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
-
-# Picture views
-
-class PictureDetailView(generic.DetailView):
-    model = Picture
 
 def update_picture(request, pk):
     picture = get_object_or_404(Picture, pk=pk)
@@ -391,7 +414,4 @@ def user_detail(request, pk):
     user = User.objects.get(pk=pk)
     ctx = { 'user' : user }
     return render(request, 'commonplace/user_detail.html', ctx)
-
-# Add new categories
-
 
