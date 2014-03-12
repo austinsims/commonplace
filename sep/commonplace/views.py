@@ -34,6 +34,11 @@ def make_thumbnail(url, size):
     img.thumbnail((256,256), Image.ANTIALIAS)
     return img
 
+def process_new_categories(item,new_categories):
+    for cname in new_categories.split(' '):
+        item.categories.get_or_create(name=cname)
+    item.save()
+
 # Commonplace views
 
 # Front page; right now, just list latest ten items
@@ -57,16 +62,24 @@ def my_items(request):
 
 def item_update(request, pk):
     item = get_object_or_404(Item, pk=pk)
-    if hasattr(item,'article'):
-        return redirect(update_article, pk=item.pk)
-    elif hasattr(item,'picture'):
-        return redirect(update_picture, pk=item.pk)
-    elif hasattr(item,'video'):
-        return redirect(update_video, pk=item.pk)
+
+    if request.user.pk is item.user.pk:
+        if hasattr(item,'article'):
+            article = get_object_or_404(Article, pk=pk)
+            form = ArticleForm(request.POST or None, instance=article)
+        elif hasattr(item,'picture'):
+            picture = get_object_or_404(Picture, pk=pk)
+            form = PictureForm(request.POST or None, instance=picture)
+        elif hasattr(item,'video'):
+            video = get_object_or_404(Video, pk=pk)
+            form = VideoForm(request.POST or None, instance=video)
+        if form.is_valid():
+            form.save()
+            return redirect('my_items')
+        return render(request, 'commonplace/edit_item.html', {'form' : form })
     else:
-        return HttpResponse('It\'s something else!')
-
-
+        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
+    
 # View items in a certain category
 def items_by_category(request, category_name):
     try:
@@ -143,18 +156,6 @@ def item_delete(request, pk):
 
 # Article views
 
-def update_article(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    if request.user.pk is article.user.pk:
-        form = ArticleForm(request.POST or None, instance=article)
-        if form.is_valid():
-            form.save()
-            return redirect('my_items')
-        template_name = 'commonplace/edit_article.html'
-        return render(request, template_name, {'form' : form})
-    else:
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
-
 def submit_article(request):
     if not request.user.is_authenticated():
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
@@ -191,10 +192,7 @@ def submit_article(request):
                     # Check for new categories from form
                     new_categories = form.data.get('new_categories')
                     if new_categories is not None:
-                        for cname in new_categories.split(' '):
-                            if len(cname.strip()) > 0:
-                                article.categories.get_or_create(name=cname)
-                        article.save()
+                        process_new_categories(article, new_categories)
 
                     return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
 
@@ -221,7 +219,7 @@ def submit_article(request):
 
             return HttpResponseRedirect(reverse('article_detail', kwargs={'pk' : article.pk}))
 
-    return render(request, 'commonplace/edit_article.html', {
+    return render(request, 'commonplace/edit_item.html', {
                 'form' : form,
                 })
 
@@ -266,13 +264,11 @@ def submit_picture(request):
                 # Check for new categories from form
                 new_categories = form.data.get('new_categories')
                 if new_categories is not None:
-                    for cname in new_categories.split(' '):
-                        picture.categories.get_or_create(name=cname)
-                    picture.save()
-                
+                    process_new_categories(picture,new_categories)
+
                 return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
 
-    return render(request, 'commonplace/edit_picture.html', {
+    return render(request, 'commonplace/edit_item.html', {
             'form' : form,
             })
 
@@ -280,18 +276,6 @@ def submit_picture(request):
 
 class PictureDetailView(generic.DetailView):
     model = Picture
-
-def update_picture(request, pk):
-    picture = get_object_or_404(Picture, pk=pk)
-    if request.user.pk is picture.user.pk:
-        form = PictureForm(request.POST or None, instance=picture)
-        if form.is_valid():
-            form.save()
-            return redirect('my_items')
-        template_name = 'commonplace/edit_picture.html'
-        return render(request, template_name, {'form' : form})
-    else:
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
 
 # Video views
 
@@ -333,14 +317,11 @@ def submit_video(request):
                 # Check for new categories from form
                 new_categories = form.data.get('new_categories')
                 if new_categories is not None:
-                    for cname in new_categories.split(' '):
-                        video.categories.get_or_create(name=cname)
-                    video.save()
-
+                    process_new_categories(video, new_categories)
 
                 return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : video.pk}))
 
-    return render(request, 'commonplace/edit_video.html', {
+    return render(request, 'commonplace/edit_item.html', {
             'form' : form,
             })
 
@@ -369,19 +350,6 @@ def search_items(request):
         return render(request, 'commonplace/search_results.html', {
             'search_string' : search_string,
             'items' : items, })
-
-def update_video(request, pk):
-    video = get_object_or_404(Video, pk=pk)
-    if request.user.pk is video.user.pk:
-        form = VideoForm(request.POST or None, instance=video)
-        if form.is_valid():
-            form.save()
-            return redirect('my_items')
-        template_name = 'commonplace/edit_video.html'
-        return render(request, template_name, {'form' : form})
-    else:
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
-
 
 # User views
 

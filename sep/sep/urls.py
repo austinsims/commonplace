@@ -32,25 +32,18 @@ urlpatterns = patterns('',
     url(r'^my_items$', views.my_items, name='my_items'),
     url(r'delete/(?P<pk>\d+)$', views.item_delete, name='item_delete'),
     url(r'update/(?P<pk>\d+)$', views.item_update, name='item_update'),
+    url(r'^search/items', views.search_items, name='search_items'),
     # TODO: use username instead of pk for user detail URL
     url(r'^user/(?P<pk>\d+)$', views.user_detail, name='user_detail'),
+
     # Article URLs
     url(r'^create/article', views.submit_article, name='create_article'),
-    url(r'update/article/(?P<pk>\d+)$', views.update_article, name='article_update'),
-    
-    url(r'^search/items', views.search_items, name='search_items'),
 
     # Picture URLs
     url(r'^create/picture', views.submit_picture, name='create_picture'),
-    url(r'update/picture/(?P<pk>\d+)$', views.update_picture, name='picture_update'),
+
     # Video URLs
     url(r'^create/video', views.submit_video, name='create_video'),
-    url(r'update/video/(?P<pk>\d+)$', views.update_video, name='video_update'),
-
-
-
-    
-
 
 )
 
