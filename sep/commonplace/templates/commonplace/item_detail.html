@@ -1,16 +1,28 @@
 {% extends "commonplace/base.html" %}
 
 {% block content %}
-<h1>{{ item.title }}</h1>
+<h1>{{ title }}</h1>
 <p>
   Categories: 
-  {% for c in item.categories.all %}
+  {% for c in categories.all %}
       <a href="{% url 'items_by_category' c.name %}">{{ c.name }}</a>
   {% endfor %}
 </p>
-<p>Originally from <a href="{{ item.url }}">{{ item.url }}</a></i></p>
+<p>Originally from <a href="{{ url }}">{{ url }}</a></i></p>
 <!-- TODO: use username instead of pk for user detail URL -->
-<p>Submitted by <a href="{%url 'user_detail' item.user.pk %}"> {{ item.user.first_name }} {{ item.user.last_name }}</a></p>
-<p>{{ item.description }}</p>
+<p>Submitted by <a href="{%url 'user_detail' author.pk %}"> {{ author.first_name }} {{ author.last_name }}</a></p>
+<p>{{ description }}</p>
 
+{% if screenshot %}
+<img src = "{{ screenshot.url }}" />
+{% endif %}
+{% if fulltext %}
+<div style="border:1px solid black; margin:3em; padding:1em; width:60%">{{ fulltext |safe }}</div>
+{% endif %}
+{% if thumbnail %}
+<img src = "{{ thumbnail.url }}" />
+{% endif %}
+<br /> <br />
+<div class="fb-share-button" data-href="{{video.url}}" data-type="box_count"></div>
+<div class="fb-comments" data-href="{{ video.url }}" data-numposts="5" data-colorscheme="light"></div>
 {% endblock %}

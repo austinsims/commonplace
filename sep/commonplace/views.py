@@ -109,17 +109,27 @@ class ItemDetailView(generic.DetailView):
 
 def item_detail(self, pk):
     item = get_object_or_404(Item, pk=pk)
+    baseValues = { 
+        'title' : item.title, 
+        'categories' : item.categories, 
+        'description' : item.description, 
+        'url' : item.url,
+        'author' : item.user,
+        }
+
     if hasattr(item,'article'):
         article = Article.objects.get(pk=item.pk)
-        return render(self, 'commonplace/article_detail.html', {'article' : Article.objects.get(pk=item.pk)})
+        specValues = {'fulltext' : article.fulltext }
     elif hasattr(item,'picture'):
         picture = Picture.objects.get(pk=item.pk)
-        return render(self, 'commonplace/picture_detail.html', {'picture' : Picture.objects.get(pk=item.pk)})
+        specValues = {'thumbnail' : picture.thumbnail }
     elif hasattr(item,'video'):
         video = Video.objects.get(pk=item.pk)
-        return render(self, 'commonplace/video_detail.html', {'video' : Video.objects.get(pk=item.pk)})
-    else:
-        return HttpResponse('It\'s something else!')
+        specValues = {'screenshot' : video.screenshot }
+
+    values = dict(baseValues.items() + specValues.items())
+    return render(self, 'commonplace/item_detail.html', values)
+
 
 def item_delete(request, pk):
     item = get_object_or_404(Item, pk=pk)
@@ -183,7 +193,7 @@ def submit_article(request):
                     if new_categories is not None:
                         for cname in new_categories.split(' '):
                             if len(cname.strip()) > 0:
-                                article.categories.create(name=cname)
+                                article.categories.get_or_create(name=cname)
                         article.save()
 
                     return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
@@ -255,10 +265,9 @@ def submit_picture(request):
 
                 # Check for new categories from form
                 new_categories = form.data.get('new_categories')
-
                 if new_categories is not None:
                     for cname in new_categories.split(' '):
-                        picture.categories.create(name=cname)
+                        picture.categories.get_or_create(name=cname)
                     picture.save()
                 
                 return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
@@ -337,7 +346,7 @@ def submit_video(request):
                 new_categories = form.data.get('new_categories')
                 if new_categories is not None:
                     for cname in new_categories.split(' '):
-                        video.categories.create(name=cname)
+                        video.categories.get_or_create(name=cname)
                     video.save()
 
 

@@ -5,7 +5,7 @@ from django.conf import settings
 
 class Category(models.Model):
     verbose_name_plural = 'Categories'
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     def __unicode__(self):
         return self.name
 
