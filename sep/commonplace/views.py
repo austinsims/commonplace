@@ -106,9 +106,8 @@ def items_by_user(request, pk):
             })
 
 # Item views
-# TODO: Generalize Article, Video, Picture create views into CreateItem, then
-# subclass from there
 
+# used for index
 class ItemListView(generic.ListView):
     model = Item
 
@@ -116,9 +115,6 @@ class ItemListView(generic.ListView):
         context = super(ItemListView, self).get_context_data(**kwargs)
         context['now'] = timezone.now()
         return context
-
-class ItemDetailView(generic.DetailView):
-    model = Item
 
 def item_detail(self, pk):
     item = get_object_or_404(Item, pk=pk)
@@ -272,10 +268,6 @@ def submit_picture(request):
             'form' : form,
             })
 
-# Picture views
-
-class PictureDetailView(generic.DetailView):
-    model = Picture
 
 # Video views
 
