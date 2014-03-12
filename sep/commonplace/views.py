@@ -276,18 +276,6 @@ def submit_picture(request):
             'form' : form,
             })
 
-def update_picture(request, pk):
-    picture = get_object_or_404(Picture, pk=pk)
-    if request.user.pk is picture.user.pk:
-        form = PictureForm(request.POST or None, instance=picture)
-        if form.is_valid():
-            form.save()
-            return redirect('my_items')
-        template_name = 'commonplace/edit_picture.html'
-        return render(request, template_name, {'form' : form})
-    else:
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to edit that!'})
-
 # Picture views
 
 class PictureDetailView(generic.DetailView):
