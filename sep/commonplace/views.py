@@ -41,13 +41,28 @@ def process_new_categories(item,new_categories):
 
 # Commonplace views
 
-# Front page; right now, just list latest ten items
+# Front page view.
 def index(request):
-    latest_items = Item.objects.order_by('-creation_date')[:10]
-    context = {
-        'latest_items' : latest_items,
-        }
-    return render(request, 'commonplace/index.html', context)
+    
+    # Generate list of latest items.
+    latest_items = Item.objects.order_by('-creation_date')
+    
+    # Generate list of categories for which the user has submitted articles.
+    recommended_categories = []
+    for item in Item.objects.filter(user=request.user):
+        recommended_categories.extend(item.categories.all())
+    
+    # Generate list of recommended items.
+    recommended_items = []
+    for item in Item.objects.filter(~Q(user=request.user)):
+        if list(set(item.categories.all()) & set(recommended_categories)):
+            recommended_items.append(item)
+    
+    # Return lists of latest and recommended items.
+    return render(request, 'commonplace/index.html', {
+        'latest_items' : latest_items[:10],
+        'recommended_items' : recommended_items[:10],
+    })
 
 # TODO: debug failure on anonymous user login
 def my_items(request):
@@ -335,7 +350,7 @@ def search_items(request):
             pk_list.append(article.pk)
         items_with_matching_fulltext = Item.objects.filter(pk__in=pk_list)
             
-        # Find union of the two querysets
+        # Find union of the two querysets.
         items = items_with_matching_title_or_description | items_with_matching_fulltext
         
         # Return search results.    

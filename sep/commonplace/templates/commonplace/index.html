@@ -1,8 +1,8 @@
 {% extends "commonplace/base.html" %}
 
 {% block content %}
+	
 <h2>Latest items</h2>
-
 {% if latest_items %}
 	<ul>
 	{% for item in latest_items %}
@@ -10,7 +10,18 @@
 	{% endfor %}
 	</ul>
 {% else %}
-	<p>No items available.</p>
+	<p><i>No items available.</i></p>
+{% endif %}
+
+<h2>Recommended for you</h2>
+{% if recommended_items %}
+	<ul>
+		{% for item in recommended_items %}
+			<li><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></li>
+		{% endfor %}
+	</ul>
+{% else %}
+	<p><i>You don't have any recommendations yet. Start submitting, liking, and commenting on articles!</i></p>
 {% endif %}
 
 {% endblock %}
