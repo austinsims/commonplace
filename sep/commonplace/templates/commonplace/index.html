@@ -5,9 +5,25 @@
 <h2>Latest items</h2>
 {% if latest_items %}
 	<ul>
+		<div id="wrapper">
+		<div id="columns">
 	{% for item in latest_items %}
-		<li><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></li>
+			<div class="item">
+			<a href="{% url 'item_detail' item.id %}">
+				{% if item.thumbnail %}
+					<img src = "{{ thumbnail.url }}" />
+				{% endif %}
+				{% if item.screenshot %}
+					<img src = "{{ screenshot.url }}" />
+				{% endif %}
+				{% if item.fulltext %}
+					<div style="border:1px solid black; margin:3em; padding:1em; width:60%">{{ fulltext |safe }}</div>
+				{% endif %}
+				<p> {{item.title}} </p>
+		</a>
+		</div> 
 	{% endfor %}
+	</div> </div>
 	</ul>
 {% else %}
 	<p><i>No items available.</i></p>
