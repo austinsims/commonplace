@@ -44,6 +44,10 @@ def process_new_categories(item,new_categories):
 # Front page view.
 def index(request):
     
+    # Only display content if the user has logged in.
+    if not request.user.is_authenticated():
+        return render(request, 'commonplace/index.html')
+    
     # Generate list of latest items.
     latest_items = Item.objects.order_by('-creation_date')
     
