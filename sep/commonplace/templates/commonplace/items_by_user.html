@@ -3,8 +3,24 @@
 {% block content %}
 <h1>Items by {{ user.first_name }} {{ user.last_name }}</h1>
 <ul>
-  {% for item in items %}
-  <li><a href="/item/{{ item.id  }}">{{ item.title }}</a></li>
-  {% endfor %}
+  <div id="wrapper">
+		<div id="columns">
+	{% for item in items %}
+			<div class="item">
+			<a href="{% url 'item_detail' item.id %}">
+				{% if item.picture %}
+					<img src="{{ url }}"/>
+				{% endif %}
+				{% if item.video %}
+				
+				{% endif %}
+				{% if item.article %}
+					<div style="border:1px solid black; margin:3em; padding:1em; width:60%">{{ fulltext |safe }}</div>
+				{% endif %}
+				<p> {{item.title}} </p>
+		</a>
+		</div> 
+	{% endfor %}
+	</div> </div>
 </ul>
 {% endblock %}

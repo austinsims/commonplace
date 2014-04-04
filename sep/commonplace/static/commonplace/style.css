@@ -41,7 +41,7 @@ body {
         }
         .content {
             width:65%;
-            height:90%;
+            height: auto;
             margin:0px auto; /* Right and left margin widths set to "auto" */
             text-align:left; /* Counteract to IE5/Win Hack */
             padding:15px;

@@ -11,13 +11,13 @@
 			<div class="item">
 			<a href="{% url 'item_detail' item.id %}">
 				{% if item.picture %}
-					<img src="{{ url }}"/>
+
 				{% endif %}
 				{% if item.video %}
 				
 				{% endif %}
 				{% if item.article %}
-					<div style="border:1px solid black; margin:3em; padding:1em; width:60%">{{ fulltext |safe }}</div>
+
 				{% endif %}
 				<p> {{item.title}} </p>
 		</a>
@@ -32,9 +32,25 @@
 <h2>Recommended for you</h2>
 {% if recommended_items %}
 	<ul>
+		<div id="wrapper">
+		<div id="columns">
 		{% for item in recommended_items %}
-			<li><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></li>
+			<div class="item">
+			<a href="{% url 'item_detail' item.id %}">
+				{% if item.picture %}
+
+				{% endif %}
+				{% if item.video %}
+				
+				{% endif %}
+				{% if item.article %}
+
+				{% endif %}
+				<p> {{item.title}} </p>
+				</a>
+			</div>
 		{% endfor %}
+		</div> </div>
 	</ul>
 {% else %}
 	<p><i>You don't have any recommendations yet. Start submitting articles!</i></p>
