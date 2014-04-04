@@ -69,6 +69,10 @@ def index(request):
         'recommended_items' : recommended_items[:10],
     })
 
+# Display user preferences page.
+def user_preferences(request):
+    return render(request, 'commonplace/user_preferences.html')
+
 # TODO: debug failure on anonymous user login
 def my_items(request):
    # if request.user.is_authenticated():
