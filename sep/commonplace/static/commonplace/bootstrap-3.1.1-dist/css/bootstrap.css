@@ -236,6 +236,8 @@ th {
   }
   .navbar {
     display: none;
+    padding-left:10px;
+    padding-right:10px;
   }
   .table td,
   .table th {
@@ -739,19 +741,19 @@ pre code {
   margin-right: auto;
   margin-left: auto;
 }
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .container {
-    width: 750px;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    width: 970px;
+    width: 830px;
   }
 }
 @media (min-width: 1200px) {
   .container {
     width: 1170px;
+  }
+}
+@media (min-width: 1600px) {
+  .container {
+    width: 1400px;
   }
 }
 .container-fluid {
