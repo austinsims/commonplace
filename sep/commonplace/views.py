@@ -24,6 +24,7 @@ from commonplace.forms import *
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+
 # Utility functions; these are not views.
 
 def make_thumbnail(url, size):
@@ -371,5 +372,12 @@ def user_detail(request, pk):
     return render(request, 'commonplace/user_detail.html', ctx)
 
 # Add new categories
+
+def test_picture(request,pk):
+    picture = Picture.objects.get(pk=pk)
+    test = {'picture' : picture}
+    return render(request,'commonplace/index.html',test)
+
+
 
 

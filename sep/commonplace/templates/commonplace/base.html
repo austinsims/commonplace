@@ -6,15 +6,12 @@
     <title>Connect with Facebook</title>
     <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
     <link rel="stylesheet" href="{% static 'commonplace/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'commonplace/bootstrap-3.1.1-dist/css/bootstrap.css' %}" />
     <script src="{{ STATIC_URL }}django_facebook/js/statictest.js" type="text/javascript"></script>
 
     <title>{% block title %}Commonplace{% endblock %}</title>
 
-</head><body>
-<div>
-<div class="content">
-
-    <div style="margin-top: 60px;">
+</head><body >
 
         {% if not user.is_authenticated %}
 
@@ -22,13 +19,14 @@
 
             <!--form to call registration via facebook -->
             <form action="{% url 'facebook_connect' %}" method="post">
-                <h2>Login with Facebook</h2>
+    
+                <h2>Commonplace</h2>
                 <br />
                 {% csrf_token %}
                 <input type="hidden" value="{{ request.path }}" name="next" />
                 <div id="facebook_login_js">
                 <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                </div>
+            </div>
                 <br /><br />
             </form>
 
@@ -39,46 +37,46 @@
         </div>
 
         {% endif %}
-
-
-<div id="header_bar">
  
+
+
 {% if user.is_authenticated %}
-<div id="name">
-       Welcome {{ user }} to Commonplace <a href="{% url 'auth_logout' %}?next={{ request.path|urlencode }}">logout</a><br />
-    </div>
-    <div id="header">
-      <div id="searchbar">
+<div> 
+<div class="content">
+
+    <nav class="navbar navbar-inverse  navbar-fixed-top " role="navigation">                  
+      <div class="container">
+      <ul class="nav nav-tabs">
+        {% block sidebar %}
+        <li ><a href="{% url 'index' %}">Home</a></li>;
+        <li><a href="{% url 'my_items' %}">My Items</a></li>
+        <li><a href="{% url 'create_article' %}">Submit Article</a></li>
+        <li><a href="{% url 'create_picture' %}">Submit Picture</a></li>
+        <li><a href="{% url 'create_video' %}">Submit Video</a></li>
+        {% endblock %}
         {% block searchbar %}
-          <form action="{% url 'search_items' %}" method="post">{% csrf_token %}
-            Search items:
-            <input type="text" name="search_string" placeholder="Search...">
-            <input type="submit" value="Search">
+          <form class="navbar-form navbar-left" role="search" action="{% url 'search_items' %}" method="post">{% csrf_token %}
+            <input class= "form-control"type="text" name="search_string" placeholder="Search Commonplace">
+            <input type="submit" class="btn btn-default" value="Search">
           </form>
         {% endblock %}
-      </div>
-      <div id="sidebar">
-        {% block sidebar %}
-        <a href="{% url 'index' %}">Index</a>&nbsp;
-        <a href="{% url 'my_items' %}">My Items</a>&nbsp;
-        <a href="{% url 'create_article' %}">Submit Article</a>&nbsp;
-        <a href="{% url 'create_picture' %}">Submit Picture</a>&nbsp;
-        <a href="{% url 'create_video' %}">Submit Video</a>&nbsp;
-        {% endblock %}
-      </div>
+         <ul class="nav navbar-nav navbar-right ">
+            <li><a>Signed in as {{ user }}</a></li>
+            <li ><a href="{% url 'auth_logout' %}?next={{ request.path|urlencode }}">logout</a></li>
+        </ul>
+      </ul>
     </div>
-    <hr><br />
+  </nav>
+    
     <div id="content">
           {% block content %}{% endblock %}
     </div><br />
-    <hr><br />
     
   </body>
 
             
         {% endif %}
 
-    </div>
 
 </div>
 

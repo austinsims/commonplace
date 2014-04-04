@@ -10,13 +10,13 @@
 	{% for item in latest_items %}
 			<div class="item">
 			<a href="{% url 'item_detail' item.id %}">
-				{% if item.thumbnail %}
-					<img src = "{{ thumbnail.url }}" />
+				{% if item.picture %}
+					<img src="{{ url }}"/>
 				{% endif %}
-				{% if item.screenshot %}
-					<img src = "{{ screenshot.url }}" />
+				{% if item.video %}
+				
 				{% endif %}
-				{% if item.fulltext %}
+				{% if item.article %}
 					<div style="border:1px solid black; margin:3em; padding:1em; width:60%">{{ fulltext |safe }}</div>
 				{% endif %}
 				<p> {{item.title}} </p>
