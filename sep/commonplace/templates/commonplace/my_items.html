@@ -5,24 +5,37 @@
 <h2>Items</h2>
 
 {% if my_items %}
-<table border=1>
-  <tr>
-    <th>Title</th>
-    <th>Actions</th>
-  </tr>
-	{% for item in my_items %}
-	<tr>
-      <td><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></td>
-      <td>
-        <a href="{% url 'item_delete' item.id %}">Delete</a>&nbsp;
-        <a href="{% url 'item_update' item.id %}">Edit</a>&nbsp;
-      </td>
-    </tr>
-	{% endfor %}
-</table>
+  {% for key, values in my_items.items %}
+    <p>
+    <h3>
+    {% ifequal key 'loose_items' %}
+      Not in a folder
+    {% else %}
+      Folder {{ key }}
+    {% endifequal %}
+    </h3>
+
+    <table border=1>
+      <tr>
+        <th>Title</th>
+        <th>Actions</th>
+      </tr>
+      {% for item in values %}
+        <tr>
+          <td><a href="{% url 'item_detail' item.id %}">{{ item.title }}</a></td>
+          <td>
+            <a href="{% url 'item_delete' item.id %}">Delete</a>&nbsp;
+            <a href="{% url 'item_update' item.id %}">Edit</a>&nbsp;
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+    </p>
+
+  {% endfor %}
 
 {% else %}
-<p>No items available.</p>
+  <p>No items available.</p>
 {% endif %}
 
 {% endblock %}

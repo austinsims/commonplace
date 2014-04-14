@@ -16,8 +16,11 @@ import gdata.youtube.service
 # For making article summaries
 from readability.readability import Document as ReadableDocument
 import urllib
+
+# various python imports
 import re
 import os
+from collections import defaultdict
 
 from commonplace.models import *
 from commonplace.forms import *
@@ -75,16 +78,25 @@ def user_preferences(request):
     folders = Folder.objects.filter(user=request.user)
     return render(request, 'commonplace/user_preferences.html', {'folders' : folders})
 
-# TODO: debug failure on anonymous user login
 def my_items(request):
-   # if request.user.is_authenticated():
-        my_items = Item.objects.filter(user=request.user)
-        context = { 
-            'my_items' : my_items,
-            }
-        return render(request, 'commonplace/my_items.html', context)
-  #  else:
-  #      return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t logged in!'})
+    results = Item.objects.filter(user=request.user)
+    my_folders = Folder.objects.filter(user=request.user)
+    my_items = defaultdict(list)
+    
+    # Sort items by folder.
+    for item in results:
+        if item.folders.count() > 0:
+            # add to appropriate list
+            for folder in item.folders.filter(user=request.user):
+                my_items[folder.name].append(item)
+        else:
+            # add to 'loose_items' list
+            my_items['loose_items'].append(item)
+
+    context = { 
+        'my_items' : dict(my_items),
+        }
+    return render(request, 'commonplace/my_items.html', context)
 
 def item_update(request, pk):
     item = get_object_or_404(Item, pk=pk)
