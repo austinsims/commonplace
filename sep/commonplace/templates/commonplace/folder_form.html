@@ -1,0 +1,13 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
+<h1>Create a new folder</h1>
+<form action="{{ action }}" method="POST">
+  {% csrf_token %}
+  <ul>
+    {{ form.as_p }}
+  </ul>
+
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}

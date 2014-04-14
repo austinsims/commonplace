@@ -57,3 +57,8 @@ class AddCategory(forms.ModelForm):
         instance = getattr(self, 'instance', None)
     class Meta:
         model = Category
+
+class FolderForm(forms.ModelForm):
+    class Meta:
+        model = Folder
+        exclude = ['user']

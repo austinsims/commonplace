@@ -72,7 +72,8 @@ def index(request):
 
 # Display user preferences page.
 def user_preferences(request):
-    return render(request, 'commonplace/user_preferences.html')
+    folders = Folder.objects.filter(user=request.user)
+    return render(request, 'commonplace/user_preferences.html', {'folders' : folders})
 
 # TODO: debug failure on anonymous user login
 def my_items(request):
@@ -361,5 +362,13 @@ def test_picture(request,pk):
     return render(request,'commonplace/index.html',test)
 
 
+# Folder views
 
-
+class FolderCreate(generic.CreateView):
+    model = Folder
+    form_class = FolderForm
+    def form_valid(self, form):
+        folder = form.save(commit=False)
+        folder.user = self.request.user
+        folder.save()
+        return HttpResponseRedirect(reverse('user_preferences'))

@@ -46,7 +46,8 @@ urlpatterns = patterns('',
     # Video URLs
     url(r'^create/video', views.submit_video, name='create_video'),
     
-
+    # Folder URLs
+    url(r'^create/folder', views.FolderCreate.as_view(), name='create_folder'),
 
 )
 

@@ -2,4 +2,13 @@
 
 {% block content %}
   <h1>User preferences</h1>
+  
+  
+  <h2>Your folders</h2>
+  <ul>
+  {% for folder in folders %}
+    {{ folder }}<br/>
+  {% endfor %}
+  </ul>
+  <a href="{% url 'create_folder' %}">Create folder</a>
 {% endblock %}
