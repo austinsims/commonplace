@@ -12,6 +12,8 @@ class Category(models.Model):
 class Folder(models.Model):
     name = models.CharField(max_length=200)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    def __unicode__(self):
+        return self.name
 
 class Item(models.Model):
     creation_date = models.DateTimeField('date created', auto_now_add=True)
@@ -20,7 +22,7 @@ class Item(models.Model):
     url = models.URLField(max_length=2000, unique=True) # don't let two users submit same item
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     categories = models.ManyToManyField(Category, blank=True)
-#    folders = models.ManyToManyField(Folder, blank=True)
+    folders = models.ManyToManyField(Folder, blank=True)
     def __unicode__(self):
         return self.title
 

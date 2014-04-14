@@ -91,13 +91,13 @@ def item_update(request, pk):
     if request.user.pk is item.user.pk:
         if hasattr(item,'article'):
             article = get_object_or_404(Article, pk=pk)
-            form = ArticleForm(request.POST or None, instance=article)
+            form = ArticleForm(request.POST or None, instance=article, user=request.user)
         elif hasattr(item,'picture'):
             picture = get_object_or_404(Picture, pk=pk)
-            form = PictureForm(request.POST or None, instance=picture)
+            form = PictureForm(request.POST or None, instance=picture, user=request.user)
         elif hasattr(item,'video'):
             video = get_object_or_404(Video, pk=pk)
-            form = VideoForm(request.POST or None, instance=video)
+            form = VideoForm(request.POST or None, instance=video, user=request.user)
         if form.is_valid():
             form.save()
             return redirect('my_items')
@@ -177,68 +177,46 @@ def item_delete(request, pk):
 
 # Article views
 
+
 def submit_article(request):
     if not request.user.is_authenticated():
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
+
+    if request.method == 'GET':
+        form = ArticleForm(user=request.user)
     else:
-        if request.method == 'GET':
-            form = ArticleForm()
-        else:
-            # POST request: handle form upload.
-            form = ArticleForm(request.POST) # bind data from request
+        # POST request: handle form upload.
+        form = ArticleForm(request.POST, user=request.user) # bind data from request
 
-            # If data is valid, create article and redirect
-            if form.is_valid():
-                    # Retrieve short title and readable text
-                    url = form.cleaned_data['url']
-                    try:
-                        html = urllib.urlopen(url).read()
-                    except IOError:
-                        # TODO: Make a template for this error message and render it
-                        return HttpResponse('Sorry, the webpage at your URL %s does not exist!' % url)
-                        return render(request, 'commonplace/error.html', {'message' : 'Sorry, the webpage at your URL %s does not exist!' % url})
-
-                    doc = ReadableDocument(html)
-                    summary = doc.summary()
-                    summary = re.sub(r'</?html>','', summary)
-                    summary = re.sub(r'</?body>','', summary)
-                    article = form.save(commit=False)
-
-                    article.title = doc.short_title()
-                    article.fulltext = summary
-                    article.user = request.user
-                    article.save()
-                    form.save_m2m()
-
-                    # Check for new categories from form
-                    new_categories = form.data.get('new_categories')
-                    if new_categories is not None:
-                        process_new_categories(article, new_categories)
-
-                    return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
-
-                # Retrieve short title and readable text
+        # If data is valid, create article and redirect
+        if form.is_valid():
+            # Retrieve short title and readable text
             url = form.cleaned_data['url']
             try:
                 html = urllib.urlopen(url).read()
             except IOError:
-                # TODO: Make a template for this error message and render it
-                return HttpResponse('Sorry, the webpage at your URL %s does not exist!' % url)
                 return render(request, 'commonplace/error.html', {'message' : 'Sorry, the webpage at your URL %s does not exist!' % url})
+
+            article = form.save(commit=False)
 
             doc = ReadableDocument(html)
             summary = doc.summary()
             summary = re.sub(r'</?html>','', summary)
             summary = re.sub(r'</?body>','', summary)
-            article = form.save(commit=False)
-
             article.title = doc.short_title()
             article.fulltext = summary
             article.user = request.user
+
             article.save()
+
+            # Check for new categories from form
+            new_categories = form.data.get('new_categories')
+            if new_categories is not None:
+                process_new_categories(article, new_categories)
+                
             form.save_m2m()
 
-            return HttpResponseRedirect(reverse('article_detail', kwargs={'pk' : article.pk}))
+            return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
 
     return render(request, 'commonplace/edit_item.html', {
                 'form' : form,
@@ -251,10 +229,10 @@ def submit_picture(request):
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
     else:
         if request.method == 'GET':
-            form = PictureForm()
+            form = PictureForm(user=request.user)
         else:
             # POST request: handle form upload.
-            form = PictureForm(request.POST) # bind data from request
+            form = PictureForm(request.POST, user=request.user) # bind data from request
 
             # If data is valid, create article and redirect
             if form.is_valid():
@@ -301,10 +279,10 @@ def submit_video(request):
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
     else:
         if request.method == 'GET':
-            form = VideoForm()
+            form = VideoForm(user=request.user)
         else:
             # POST request: handle form upload.
-            form = VideoForm(request.POST) # bind data from request
+            form = VideoForm(request.POST, user=request.user) # bind data from request
 
             # If data is valid, create article and redirect
             if form.is_valid():
