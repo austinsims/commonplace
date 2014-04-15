@@ -31,13 +31,22 @@ class ItemForm(forms.ModelForm):
         required=True,
         )
 
-class ArticleForm(ItemForm):    
+class ArticleForm(ItemForm):
+
+    def __init__(self, *args, **kwargs):
+        super(ArticleForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        self.fields['folders'].required = False
+        if instance.pk is None:
+            self.fields['fulltext'].widget = forms.HiddenInput()
+            self.fields['fulltext'].required = False
+
     class Meta:
         model = Article
         exclude = ['creation_date', 'user', 'title']
         template = "commonplace/edit_item.html"
         widgets = {'fulltext' : TinyMCE(
-            attrs={ 'cols': 120, 'rows':25 }, 
+            attrs={ 'cols': 120, 'rows':20 }, 
             mce_attrs={
                 'theme' : 'advanced',
                 'theme_advanced_buttons1' : "bold,italic,underline,strikethrough,|,fontsizeselect,backcolor",

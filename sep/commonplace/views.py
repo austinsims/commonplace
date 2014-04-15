@@ -212,6 +212,7 @@ def submit_article(request):
 
             article = form.save(commit=False)
 
+
             doc = ReadableDocument(html)
             summary = doc.summary()
             summary = re.sub(r'</?html>','', summary)
@@ -221,13 +222,16 @@ def submit_article(request):
             article.user = request.user
 
             article.save()
+            form.save_m2m()
 
             # Check for new categories from form
             new_categories = form.data.get('new_categories')
             if new_categories is not None:
                 process_new_categories(article, new_categories)
-                
-            form.save_m2m()
+            
+            article.save()    
+
+            
 
             return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
 

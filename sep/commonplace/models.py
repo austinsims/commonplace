@@ -27,7 +27,7 @@ class Item(models.Model):
         return self.title
 
 class Article(Item):
-    fulltext = models.CharField(max_length=4096)
+    fulltext = models.TextField()
 
 class Picture(Item):
     thumbnail = models.ImageField(upload_to='picture_thumbnails')

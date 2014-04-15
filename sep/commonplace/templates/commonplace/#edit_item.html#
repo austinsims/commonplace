@@ -1,0 +1,13 @@
+{% extends "commonplace/base.html" %}
+
+{% block content %}
+<form action="{{ action }}" method="POST">
+  {% csrf_token %}
+  <ul>
+    {{ form.as_p }}
+  </ul>
+  <b>Type new categories (separated by a space) to create them:</b><br />
+  <input type="text" name="new_categories" /><br />
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}
