@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     # url(r'^$', 'sep.views.home', name='home'),
     # url(r'^sep/', include('sep.foo.urls')),
 
+    url(r'^tinymce/', include('tinymce.urls')),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

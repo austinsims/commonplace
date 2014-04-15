@@ -1,8 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from tinymce.widgets import TinyMCE
 
 from commonplace.models import *
-
 custom_widgets = {'folders' : forms.RadioSelect, 'categories' : forms.CheckboxSelectMultiple }
 
 class ItemForm(forms.ModelForm):
@@ -34,21 +34,26 @@ class ItemForm(forms.ModelForm):
 class ArticleForm(ItemForm):    
     class Meta:
         model = Article
-        exclude = ['creation_date', 'user', 'title', 'fulltext']
+        exclude = ['creation_date', 'user', 'title']
         template = "commonplace/edit_item.html"
-#        widgets = custom_widgets
+        widgets = {'fulltext' : TinyMCE(
+            attrs={ 'cols': 120, 'rows':25 }, 
+            mce_attrs={
+                'theme' : 'advanced',
+                'theme_advanced_buttons1' : "bold,italic,underline,strikethrough,|,fontsizeselect,backcolor",
+            })
+        }
         
 class PictureForm(ItemForm):
     class Meta:
         model = Picture
         exclude = ['creation_date', 'user', 'thumbnail']
-#        widgets = custom_widgets
 
 class VideoForm(ItemForm):
     class Meta:
         model = Video
         exclude = ['creation_date', 'user', 'screenshot']
-#        widgets = custom_widgets
+
 
 class AddCategory(forms.ModelForm):
     
