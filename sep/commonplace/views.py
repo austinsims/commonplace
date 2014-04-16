@@ -41,7 +41,8 @@ def make_thumbnail(url, size):
 def process_new_categories(item,new_categories):
     for cname in new_categories.split(' '):
         if (len(cname) > 0):
-            item.categories.get_or_create(name=cname)
+            new_cat = Category.objects.get_or_create(name=cname)[0]
+    item.categories.add(new_cat)
     item.save()
 
 # Commonplace views
