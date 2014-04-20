@@ -263,7 +263,7 @@ def submit_picture(request):
                     thumbnail = make_thumbnail(url, (256,256))
                 except IOError: # caught if PIL couldn't load the thumbnail for whatever reason
                     # TODO: Make a template for this error message and render it
-                    return render(request, 'commonplace/error.html', {'message' : 'Sorry, the picture at your URL %s does not exist!' % url})
+                    return render(request, 'commonplace/error.html', {'message' : 'Sorry, the picture at your URL %s does not exist or is an unsupported format.  The supported formats are jpeg, png, and gif.' % url})
 
                 picture = form.save(commit=False)
 
