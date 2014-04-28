@@ -42,20 +42,36 @@ def process_new_categories(item,new_categories):
     for cname in new_categories.split(' '):
         if (len(cname) > 0):
             new_cat = Category.objects.get_or_create(name=cname)[0]
-    item.categories.add(new_cat)
-    item.save()
+            item.categories.add(new_cat)
+            item.save()
+
+# Convert a list of items to their specific inheritances (article, picture, or video).            
+def inheritize_items(items):
+    inheritized_items = []
+    for item in items:
+        if hasattr(item, 'article'):
+            inheritized_items.append(get_object_or_404(Article, pk=item.pk))
+        elif hasattr(item, 'picture'):
+            inheritized_items.append(get_object_or_404(Picture, pk=item.pk))
+        elif hasattr(item, 'video'):
+            inheritized_items.append(get_object_or_404(Video, pk=item.pk))
+    return inheritized_items
 
 # Commonplace views
 
 # Front page view.
 def index(request):
     
+    MAX_DISP_LATEST_ITEMS = 10
+    MAX_DISP_REC_ITEMS = 10
+    
     # Only display content if the user has logged in.
     if not request.user.is_authenticated():
         return render(request, 'commonplace/index.html')
     
     # Generate list of latest items.
-    latest_items = Item.objects.order_by('-creation_date')
+    latest_items_raw = Item.objects.order_by('-creation_date')[:MAX_DISP_LATEST_ITEMS]
+    latest_items = inheritize_items(latest_items_raw)
     
     # Generate list of categories for which the user has submitted articles.
     recommended_categories = []
@@ -63,15 +79,17 @@ def index(request):
         recommended_categories.extend(item.categories.all())
     
     # Generate list of recommended items.
-    recommended_items = []
+    recommended_items_raw = []
     for item in Item.objects.filter(~Q(user=request.user)):
         if list(set(item.categories.all()) & set(recommended_categories)):
-            recommended_items.append(item)
+            recommended_items_raw.append(item)
+    recommended_items_raw = recommended_items_raw[:MAX_DISP_REC_ITEMS]
+    recommended_items = inheritize_items(recommended_items_raw)
     
     # Return lists of latest and recommended items.
     return render(request, 'commonplace/index.html', {
-        'latest_items' : latest_items[:10],
-        'recommended_items' : recommended_items[:10],
+        'latest_items' : latest_items,
+        'recommended_items' : recommended_items,
     })
 
 # Display user preferences page.

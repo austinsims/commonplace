@@ -7,23 +7,22 @@
 	<ul>
 		<div id="wrapper">
 		<div id="columns">
-	{% for item in latest_items %}
+		{% for item in latest_items %}
 			<div class="item">
-			<a href="{% url 'item_detail' item.id %}">
-				{% if item.picture %}
-
-				{% endif %}
-				{% if item.video %}
-				
-				{% endif %}
-				{% if item.article %}
-
-				{% endif %}
-				<p> {{item.title}} </p>
-		</a>
-		</div> 
-	{% endfor %}
-	</div> </div>
+			<p>
+				<a href="{% url 'item_detail' item.id %}">
+						{% if item.thumbnail %}
+							<img src="{{item.thumbnail.url}}" />
+						{% endif %}
+						{% if item.screenshot %}
+							<img src="{{item.screenshot.url}}" />
+						{% endif %}
+						{{item.title}}
+				</a>
+			</p>
+			</div> 
+		{% endfor %}
+		</div> </div>
 	</ul>
 {% else %}
 	<p><i>No items available.</i></p>
@@ -36,19 +35,18 @@
 		<div id="columns">
 		{% for item in recommended_items %}
 			<div class="item">
-			<a href="{% url 'item_detail' item.id %}">
-				{% if item.picture %}
-
-				{% endif %}
-				{% if item.video %}
-				
-				{% endif %}
-				{% if item.article %}
-
-				{% endif %}
-				<p> {{item.title}} </p>
+		    <p>
+				<a href="{% url 'item_detail' item.id %}">
+						{% if item.thumbnail %}
+							<img src="{{item.thumbnail.url}}" />
+						{% endif %}
+						{% if item.screenshot %}
+							<img src="{{item.screenshot.url}}" />
+						{% endif %}
+						{{item.title}}
 				</a>
-			</div>
+		    </p>
+		</div> 
 		{% endfor %}
 		</div> </div>
 	</ul>
