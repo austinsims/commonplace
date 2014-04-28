@@ -3,11 +3,39 @@
 {% block content %}
 <form action="{{ action }}" method="POST">
   {% csrf_token %}
-  <ul>
-    {{ form.as_p }}
-  </ul>
-  <b>Type new categories (separated by a space) to create them:</b><br />
-  <input type="text" name="new_categories" /><br />
+  
+  <b>Item type:</b>
+  <select name="item_type" onchange="changeFormType(this.value)">
+    <option value="article"
+            {% if not item_type or item_type == 'article' %}
+            selected="selected"
+            {% endif %}
+            >Article</option>
+    <option value="picture"
+            {% if item_type == 'picture' %}
+            selected="selected"
+            {% endif %}
+            >Picture</option>
+    <option value="video"
+            {% if item_type == 'video' %}
+            selected="selected"
+            {% endif %}
+            >Video</option>
+  </select>
+  
+  
+  {{ form.as_p }}
+  
+  
+  <b>Type new categories (separated by a space) to create them:</b>
+  <input type="text" name="new_categories" /><br>
+  
   <input type="submit" value="Submit" />
 </form>
+
+<script>
+  function changeFormType(itemType) {
+    window.location.href = "{% url 'create_item' %}?item_type=" + itemType;
+  }
+</script>
 {% endblock %}

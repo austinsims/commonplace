@@ -38,15 +38,9 @@ urlpatterns = patterns('',
     url(r'^user_preferences', views.user_preferences, name='user_preferences'),
     # TODO: use username instead of pk for user detail URL
     url(r'^user/(?P<pk>\d+)$', views.user_detail, name='user_detail'),
-
-    # Article URLs
-    url(r'^create/article', views.submit_article, name='create_article'),
-
-    # Picture URLs
-    url(r'^create/picture', views.submit_picture, name='create_picture'),
-
-    # Video URLs
-    url(r'^create/video', views.submit_video, name='create_video'),
+    
+    # Item URLs,
+    url(r'^create/item', views.submit_item, name='create_item'),
     
     # Folder URLs
     url(r'^create/folder', views.FolderCreate.as_view(), name='create_folder'),

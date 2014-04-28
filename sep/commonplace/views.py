@@ -207,129 +207,94 @@ def item_delete(request, pk):
         return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to delete that!'})
     return render(request, 'commonplace/item_confirm_delete.html', {'item' : item })
 
-# Article views
-
-
-def submit_article(request):
+def submit_item(request):
     if not request.user.is_authenticated():
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
-
+        return render(
+            request,
+            'commonplace/error.html',
+            { 'message' : 'You must log in to submit content.' }
+        )
+    
     if request.method == 'GET':
-        form = ArticleForm(user=request.user)
-    else:
-        # POST request: handle form upload.
-        form = ArticleForm(request.POST, user=request.user) # bind data from request
-
-        # If data is valid, create article and redirect
-        if form.is_valid():
-            # Retrieve short title and readable text
-            url = form.cleaned_data['url']
-            try:
-                html = urllib.urlopen(url).read()
-            except IOError:
-                return render(request, 'commonplace/error.html', {'message' : 'Sorry, the webpage at your URL %s does not exist!' % url})
-
-            article = form.save(commit=False)
-
-
-            doc = ReadableDocument(html)
-            summary = doc.summary()
-            summary = re.sub(r'</?html>','', summary)
-            summary = re.sub(r'</?body>','', summary)
-            article.title = doc.short_title()
-            article.fulltext = summary
-            article.user = request.user
-
-            article.save()
-            form.save_m2m()
-
-            # Check for new categories from form
-            new_categories = form.data.get('new_categories')
-            if new_categories is not None:
-                process_new_categories(article, new_categories)
-            
-            article.save()    
-
-            
-
-            return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : article.pk}))
-
-    return render(request, 'commonplace/edit_item.html', {
-                'form' : form,
-                })
-
-# Picture views
-
-def submit_picture(request):
-    if not request.user.is_authenticated():
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
-    else:
-        if request.method == 'GET':
+        
+        # Determine the appropriate form to display based on the selected item type.
+        item_type = request.GET.get('item_type')
+        if item_type == 'picture':
             form = PictureForm(user=request.user)
+        elif item_type == 'video':
+            form = VideoForm(user=request.user)
         else:
-            # POST request: handle form upload.
-            form = PictureForm(request.POST, user=request.user) # bind data from request
-
-            # If data is valid, create article and redirect
-            if form.is_valid():
-
-                # Retrieve short title and readable text
-                # TODO: Scan a webpage for images instead of requiring direct link to image.
-                url = form.cleaned_data['url']
+            form = ArticleForm(user=request.user)
+            
+    else:
+        
+        # Determine the appropriate form to bind data from the request.
+        item_type = request.POST.get('item_type')
+        if item_type == 'article':
+            form = ArticleForm(request.POST, user=request.user)
+        elif item_type == 'picture':
+            form = PictureForm(request.POST, user=request.user)
+        else:
+            form = VideoForm(request.POST, user=request.user)
+        
+        # If the form data is valid, save the data for the item.
+        if form.is_valid():
+            url = form.cleaned_data['url']
+            
+            # Perform logic for articles.
+            if item_type == 'article':
+                
+                # Validate URL.
                 try:
-                    # TODO: Generate a thumbnail. May throw NotAPictureError
+                    html = urllib.urlopen(url).read()
+                except IOError:
+                    return render(
+                        request,
+                        'commonplace/error.html',
+                        { 'message' : 'The webpage at your specified URL does not exist.' }
+                    )
+    
+                
+                item = form.save(commit=False)
+                
+                # Populate article item with data.
+                doc = ReadableDocument(html)
+                summary = doc.summary()
+                summary = re.sub(r'</?html>','', summary)
+                summary = re.sub(r'</?body>','', summary)
+                item.title = doc.short_title()
+                item.fulltext = summary
+            
+            # Perform logic for pictures.
+            elif item_type == 'picture':
+                
+                # Validate URL.
+                try:
                     thumbnail = make_thumbnail(url, (256,256))
-                except IOError: # caught if PIL couldn't load the thumbnail for whatever reason
-                    # TODO: Make a template for this error message and render it
-                    return render(request, 'commonplace/error.html', {'message' : 'Sorry, the picture at your URL %s does not exist or is an unsupported format.  The supported formats are jpeg, png, and gif.' % url})
+                except IOError: # Thrown if PIL could not load the thumbnail.
+                    return render(
+                        request,
+                        'commonplace/error.html',
+                        { 'message' : 'The image at your specified URL does not exist or is an unsupported format. Supported formats: jpeg, png, and gif.' }
+                    )
 
-                picture = form.save(commit=False)
+                item = form.save(commit=False)
 
-                # Deal with the thumbnail
+                # Deal with the thumbnail.
                 temp_handle = StringIO()
                 thumbnail.save(temp_handle, 'JPEG')
                 temp_handle.seek(0)
-                # Save image to a SimpleUploadedFile which can be saved into an ImageField
+                
+                # Save thumbnail to a SimpleUploadedFile which can be saved into an ImageField.
                 suf = SimpleUploadedFile(os.path.split(url)[-1], temp_handle.read(), content_type='JPEG')
-                picture.thumbnail = suf
-                picture.user = request.user
-                picture.save()
-                form.save_m2m()
+                item.thumbnail = suf
+            
+            # Perform logic for videos.
+            else:
+                
+                item = form.save(commit=False)
 
-                # Check for new categories from form
-                new_categories = form.data.get('new_categories')
-                if new_categories is not None:
-                    process_new_categories(picture,new_categories)
-
-                return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : picture.pk}))
-
-    return render(request, 'commonplace/edit_item.html', {
-            'form' : form,
-            })
-
-
-# Video views
-
-def submit_video(request):
-    if not request.user.is_authenticated():
-        return render(request, 'commonplace/error.html', {'message' : 'Sorry, you aren\'t allowed to submit new things! Please login!'})
-    else:
-        if request.method == 'GET':
-            form = VideoForm(user=request.user)
-        else:
-            # POST request: handle form upload.
-            form = VideoForm(request.POST, user=request.user) # bind data from request
-
-            # If data is valid, create article and redirect
-            if form.is_valid():
-
-                # Retrieve short title and readable text
-                # TODO: Scan a webpage for images instead of requiring direct link to image.
-                url = form.cleaned_data['url']
-
-                video = form.save(commit=False)
-
-                # Save image to a SimpleUploadedFile which can be saved into an ImageField
+                # Save screenshot to a SimpleUploadedFile which can be saved into an ImageField.
                 if 'youtube.com/watch?v=' in url:
                     video_id = url.split('?v=')[-1]
                     yt = gdata.youtube.service.YouTubeService()
@@ -340,21 +305,23 @@ def submit_video(request):
                     screenshot.save(temp_handle, 'JPEG')
                     temp_handle.seek(0)
                     suf = SimpleUploadedFile(os.path.split(url)[-1], temp_handle.read(), content_type='JPEG')
-                    video.screenshot = suf
-                video.user = request.user
-                video.save()
-                form.save_m2m()
+                    item.screenshot = suf
+            
+            # Save item in database.
+            item.user = request.user
+            item.save()
+            form.save_m2m()
 
-                # Check for new categories from form
-                new_categories = form.data.get('new_categories')
-                if new_categories is not None:
-                    process_new_categories(video, new_categories)
+            # Check for new categories from form.
+            new_categories = form.data.get('new_categories')
+            if new_categories is not None:
+                process_new_categories(item, new_categories)
 
-                return HttpResponseRedirect(reverse('item_detail', kwargs={'pk' : video.pk}))
-
-    return render(request, 'commonplace/edit_item.html', {
-            'form' : form,
-            })
+            # Navigate to item detail page of the newly-submitted item.
+            return HttpResponseRedirect(reverse('item_detail', kwargs={ 'pk' : item.pk }))
+    
+    # Display page with form.
+    return render(request, 'commonplace/edit_item.html', { 'item_type' : item_type, 'form' : form })
 
 # View search results matching the specified search string.
 def search_items(request):
