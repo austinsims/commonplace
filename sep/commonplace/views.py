@@ -173,7 +173,7 @@ class ItemListView(generic.ListView):
         context['now'] = timezone.now()
         return context
 
-def item_detail(self, pk):
+def item_detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
     baseValues = { 
         'title' : item.title, 
@@ -181,6 +181,7 @@ def item_detail(self, pk):
         'description' : item.description, 
         'url' : item.url,
         'author' : item.user,
+        'absolute_url' : request.build_absolute_uri(reverse('item_detail', args=[item.pk]))
         }
 
     if hasattr(item,'article'):
@@ -194,7 +195,7 @@ def item_detail(self, pk):
         specValues = {'screenshot' : video.screenshot }
 
     values = dict(baseValues.items() + specValues.items())
-    return render(self, 'commonplace/item_detail.html', values)
+    return render(request, 'commonplace/item_detail.html', values)
 
 
 def item_delete(request, pk):
