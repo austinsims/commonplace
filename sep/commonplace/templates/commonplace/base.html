@@ -4,11 +4,13 @@
 
 <html>
   <head>
+    {% block head %} {% endblock %}
     <title>Commonplace</title>
     <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
     <link rel="stylesheet" href="{% static 'commonplace/style.css' %}" />
     <link rel="stylesheet" href="{% static 'commonplace/bootstrap-3.1.1-dist/css/bootstrap.css' %}" />
     <script src="{{ STATIC_URL }}django_facebook/js/statictest.js" type="text/javascript"></script>
+
 
     {{ form.media }}
 
