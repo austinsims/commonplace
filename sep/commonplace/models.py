@@ -35,3 +35,6 @@ class Picture(Item):
 class Video(Item):
     screenshot = models.ImageField(upload_to='video_screenshots')
 
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    item = models.ForeignKey(Item)

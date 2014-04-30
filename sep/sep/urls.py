@@ -45,6 +45,9 @@ urlpatterns = patterns('',
     # Folder URLs
     url(r'^create/folder', views.FolderCreate.as_view(), name='create_folder'),
 
+    url(r'^likes/$', views.likes, name='likes'),
+    url(r'^like/(?P<pk>\d+)$', views.like, name='like'),
+    url(r'^unlike/(?P<pk>\d+)$', views.unlike, name='unlike'),
 )
 
 urlpatterns += staticfiles_urlpatterns()

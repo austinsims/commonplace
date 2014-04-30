@@ -5,7 +5,7 @@ from django.views import generic
 from django.utils import timezone
 
 from django.db.models import Q
-
+from django_facebook.api import get_persistent_graph, require_persistent_graph
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 # For making thumbnails & screenshots
@@ -175,13 +175,17 @@ class ItemListView(generic.ListView):
 
 def item_detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
+    likes = Like.objects.filter(user=request.user, item=item).exists()
+
     baseValues = { 
         'title' : item.title, 
         'categories' : item.categories, 
         'description' : item.description, 
         'url' : item.url,
         'author' : item.user,
-        'absolute_url' : request.build_absolute_uri(reverse('item_detail', args=[item.pk]))
+        'absolute_url' : request.build_absolute_uri(reverse('item_detail', args=[item.pk])),
+        'pk' : item.pk,
+        'likes' : likes,
         }
 
     if hasattr(item,'article'):
@@ -388,3 +392,23 @@ class FolderCreate(generic.CreateView):
         folder.user = self.request.user
         folder.save()
         return HttpResponseRedirect(reverse('user_preferences'))
+
+def likes(request):
+    fb = get_persistent_graph(request)
+    #stuff = fb.fql("SELECT url FROM url_like WHERE user_id = me() AND strpos(url,'') >=0")
+    stuff = fb.fql("SELECT url FROM url_like WHERE user_id = me()")
+    return HttpResponse(str(stuff))
+
+def like(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    like = Like.objects.create(user=request.user, item=item)
+    like.save()
+    return HttpResponseRedirect(reverse('item_detail', args=[pk]))
+    def __str__(self):
+        return '%s likes %s' % (self.user.username, self.item.title)
+    
+def unlike(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    like = get_object_or_404(Like, item=item)
+    like.delete()
+    return HttpResponseRedirect(reverse('item_detail', args=[pk]))

@@ -41,7 +41,12 @@
 <img src = "{{ thumbnail.url }}" />
 {% endif %}
 <br>
-<div class="fb-like" data-href="{{ absolute_url }}" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+<div class="fb-share-button" data-href="{{ absolute_url }}" data-type="box_count"></div>
+{% if likes %}
+  <a href="{% url 'unlike' pk %}">Unlike This</a>
+{% else %}
+  <a href="{% url 'like' pk %}">Like This</a>
+{% endif %}
 </br>
 <div class="fb-comments" data-href="{{ absolute_url }}" data-numposts="5" data-colorscheme="light"></div>
 {% endblock %}
