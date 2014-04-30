@@ -2,6 +2,20 @@
 
 {% block head %}
 <title>Commonplace - {{ title }}</title>
+<meta property="og:title" content="Commonplace - {{ title }}" />
+
+{% if description %}
+  <meta property="og:description" content="{{ description }}" />
+{% endif %}
+
+{% if screenshot %}
+  <meta property="og:image" content="{{ absolute_screenshot_url }}" />
+{% endif %}
+
+{% if thumbnail %}
+  <meta property="og:image" content="{{ absolute_thumbnail_url }}" />
+{% endif %}
+
 {% endblock %}
 
 {% block content %}

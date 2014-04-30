@@ -186,13 +186,22 @@ def item_detail(request, pk):
 
     if hasattr(item,'article'):
         article = Article.objects.get(pk=item.pk)
-        specValues = {'fulltext' : article.fulltext }
+        specValues = {
+            'fulltext' : article.fulltext,
+            'description' : article.fulltext[0:140],
+        }
     elif hasattr(item,'picture'):
         picture = Picture.objects.get(pk=item.pk)
-        specValues = {'thumbnail' : picture.thumbnail }
+        specValues = {
+            'thumbnail' : picture.thumbnail,
+            'absolute_thumbnail_url' : request.build_absolute_uri(picture.thumbnail.url)
+        }
     elif hasattr(item,'video'):
         video = Video.objects.get(pk=item.pk)
-        specValues = {'screenshot' : video.screenshot }
+        specValues = {
+            'screenshot' : video.screenshot,
+            'absolute_screenshot_url' : request.build_absolute_uri(video.screenshot.url)
+        }
 
     values = dict(baseValues.items() + specValues.items())
     return render(request, 'commonplace/item_detail.html', values)
