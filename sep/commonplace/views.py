@@ -73,14 +73,16 @@ def index(request):
     latest_items_raw = Item.objects.order_by('-creation_date')[:MAX_DISP_LATEST_ITEMS]
     latest_items = inheritize_items(latest_items_raw)
     
-    # Generate list of categories for which the user has submitted articles.
+    # Generate list of categories for which the user has submitted or like articles.
     recommended_categories = []
-    for item in Item.objects.filter(user=request.user):
-        recommended_categories.extend(item.categories.all())
+    submitted_items = Item.objects.filter(user=request.user)
+    liked_items = Item.objects.filter(like__user=request.user)
+    for item in list(set(submitted_items) | set(liked_items)):
+        recommended_categories = list(set(recommended_categories) | set(item.categories.all()))
     
     # Generate list of recommended items.
     recommended_items_raw = []
-    for item in Item.objects.filter(~Q(user=request.user)):
+    for item in Item.objects.filter(~Q(user=request.user) & ~Q(like__user=request.user)):
         if list(set(item.categories.all()) & set(recommended_categories)):
             recommended_items_raw.append(item)
     recommended_items_raw = recommended_items_raw[:MAX_DISP_REC_ITEMS]
@@ -132,6 +134,12 @@ def item_update(request, pk):
             form = VideoForm(request.POST or None, instance=video, user=request.user)
         if form.is_valid():
             form.save()
+
+            # Check for new categories from form.
+            new_categories = form.data.get('new_categories')
+            if new_categories is not None:
+                process_new_categories(item, new_categories)
+            
             return redirect('my_items')
         return render(request, 'commonplace/edit_item.html', {'form' : form })
     else:
@@ -198,13 +206,13 @@ def item_detail(request, pk):
         picture = Picture.objects.get(pk=item.pk)
         specValues = {
             'thumbnail' : picture.thumbnail,
-            'absolute_thumbnail_url' : request.build_absolute_uri(picture.thumbnail.url)
+            'absolute_thumbnail_url' : request.build_absolute_uri(picture.thumbnail.url) if picture.thumbnail else None
         }
     elif hasattr(item,'video'):
         video = Video.objects.get(pk=item.pk)
         specValues = {
             'screenshot' : video.screenshot,
-            'absolute_screenshot_url' : request.build_absolute_uri(video.screenshot.url)
+            'absolute_screenshot_url' : request.build_absolute_uri(video.screenshot.url) if video.screenshot else None
         }
 
     values = dict(baseValues.items() + specValues.items())
