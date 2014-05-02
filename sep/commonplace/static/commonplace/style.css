@@ -6,19 +6,25 @@
 }
 
 body {
-            margin:50px 0px; padding:0px; /* Need to set body margin and padding to get consistency between browsers. */
+            margin:50px 0px; 
+     /* Need to set body margin and padding to get consistency between browsers. */
+           
             text-align:center; /* Hack for IE5/Win */
             direction: ltr;
             font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
             font-size: 11px;
             padding-top: 70px;
             margin: 0;
-           background: url("http://i.imgur.com/QnKFcHv.jpg") no-repeat #000;
-
+           background: url("http://www.americapictures.net/wp-content/uploads/2012/05/night-view-building-chicago-illinois-united-states.jpg") no-repeat #000;
+           height: auto;
             background-position: center;
+              -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
             background-size: cover;
          background-attachment: fixed;
 }
+
         
 
         #footer {
@@ -30,21 +36,23 @@ body {
         	font-size: 20px;
         }
         .inner_content{
-            width:50%;
-            height:300px;
-            background-color:black;
-            margin:20% auto;
-            opacity:0.5;
+        margin: auto;  
+        position: absolute;
+        left:0;
+        right: 0;
+        top: 0;
+        bottom: 0; 
+        background-color:black;
+        background: rgba(0,0,0,0.7);
+        padding:200px;
 
 
         }
-        .inner_content:hover{
-            opacity:0.8;
-        }
+       
         .googleFont{
              font-family: 'Pacifico', cursive;
              color: white;
-             font-size: 57px;
+             font-size: 57px
            }
         .googleFont2{
             font-family: 'Open Sans Condensed', sans-serif;
@@ -60,16 +68,24 @@ body {
             text-align:left; /* Counteract to IE5/Win Hack */
             border:1px solid #333;
             padding:13px;
-            background-color:white;
+            background: rgba(0,0,0,0.8);
+            color:white;
+            text-align: center;
+            font-family: 'Lobster', cursive; 
         }
         .recommendation{
             position: relative;
             width:30%;
-            height:40%;  
+            height:50%;  
             float:right;
             margin:50px;
             padding:9px;
-           background-color:white;
+           background: rgba(0,0,0,0.8);
+           overflow: scroll;
+           overflow-x:hidden;
+           border:1px solid #333;
+           color: white;
+
         }
 
         #columns {

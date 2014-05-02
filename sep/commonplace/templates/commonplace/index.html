@@ -8,7 +8,9 @@
 		<div id="wrapper">
 		<div id="columns">
 		{% for item in latest_items %}
+
 			<div class="item">
+				<br></br>
 			<p>
 				<a href="{% url 'item_detail' item.id %}">
 						{% if item.thumbnail %}
