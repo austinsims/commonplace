@@ -27,7 +27,9 @@
 {% else %}
 	<p><i>No items available.</i></p>
 {% endif %}
+{% endblock %}
 
+{% block content1 %}
 <h2>Recommended for you</h2>
 {% if recommended_items %}
 	<ul>
@@ -53,6 +55,7 @@
 {% else %}
 	<p><i>You don't have any recommendations yet. Start submitting articles!</i></p>
 {% endif %}
+
 
 {% endblock %}
 

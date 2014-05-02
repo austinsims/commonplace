@@ -8,23 +8,19 @@
 body {
             margin:50px 0px; padding:0px; /* Need to set body margin and padding to get consistency between browsers. */
             text-align:center; /* Hack for IE5/Win */
-            background-color:#000000;
-            color: #333333;
             direction: ltr;
             font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
             font-size: 11px;
             padding-top: 70px;
             margin: 0;
-            background: rgb(255,255,255);
-            background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%, rgba(171,209,234,1) 100%);
-            background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(171,209,234,1)));
-            background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(171,209,234,1) 100%);
-            background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(171,209,234,1) 100%);
-            background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(171,209,234,1) 100%);
-            background: radial-gradient(ellipse at center,  rgba(255,255,255,1) 0%,rgba(171,209,234,1) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#abd1ea',GradientType=1 );
+           background: url("http://i.imgur.com/QnKFcHv.jpg") no-repeat #000;
 
-        }
+            background-position: center;
+            background-size: cover;
+         background-attachment: fixed;
+}
+        
+
         #footer {
             height: 80px;
         }
@@ -34,19 +30,46 @@ body {
         	font-size: 20px;
         }
         .inner_content{
-            width:30%;
-            height:10%;
-            margin:0px auto;
+            width:50%;
+            height:300px;
+            background-color:black;
+            margin:20% auto;
+            opacity:0.5;
+
 
         }
+        .inner_content:hover{
+            opacity:0.8;
+        }
+        .googleFont{
+             font-family: 'Pacifico', cursive;
+             color: white;
+             font-size: 57px;
+           }
+        .googleFont2{
+            font-family: 'Open Sans Condensed', sans-serif;
+            color: white;
+            font-size: 20px;
+        }   
         .content {
-            width:65%;
+            position:absolute;
+            width:60%;
             height: auto;
-            margin:0px auto; /* Right and left margin widths set to "auto" */
+            float:left ;/* Right and left margin widths set to "auto" */
+            margin:50px;
             text-align:left; /* Counteract to IE5/Win Hack */
-            padding:15px;
             border:1px solid #333;
+            padding:13px;
             background-color:white;
+        }
+        .recommendation{
+            position: relative;
+            width:30%;
+            height:40%;  
+            float:right;
+            margin:50px;
+            padding:9px;
+           background-color:white;
         }
 
         #columns {
@@ -107,14 +130,6 @@ body {
             margin: 50px auto;
         }
 
-        h2 {
-            line-height: 20px;
-            min-height: 20px;
-            padding-bottom: 2px;
-            vertical-align: bottom;
-            color: #1C2A47;
-            font-size: 16px;
-        }
         a {
             color: #3B5998;
             cursor: pointer;
@@ -143,5 +158,7 @@ body {
         }*/
         
 }     
+
+
 
        
