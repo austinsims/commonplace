@@ -29,13 +29,13 @@
 <p>Originally from <a href="{{ url }}">{{ url }}</a></i></p>
 <!-- TODO: use username instead of pk for user detail URL -->
 <p>Submitted by <a href="{%url 'user_detail' author.pk %}"> {{ author.first_name }} {{ author.last_name }}</a></p>
-<p>{{ description }}</p>
+
 
 {% if screenshot %}
 <img src = "{{ screenshot.url }}" />
 {% endif %}
 {% if fulltext %}
-<div style="border:1px solid black; margin:3em; padding:1em; width:60%">{{ fulltext |safe }}</div>
+<div style="border:1px solid black; margin:3em; padding:1em; width:90%">{{ fulltext |safe }}</div>
 {% endif %}
 {% if thumbnail %}
 <img src = "{{ thumbnail.url }}" />

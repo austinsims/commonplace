@@ -92,6 +92,7 @@ def index(request):
     return render(request, 'commonplace/index.html', {
         'latest_items' : latest_items,
         'recommended_items' : recommended_items,
+        'show_rec_block' : True,
     })
 
 # Display user preferences page.

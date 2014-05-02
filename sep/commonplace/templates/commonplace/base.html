@@ -7,7 +7,7 @@
     {% block head %} {% endblock %}
     <title>Commonplace</title>
     <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
-   <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+   <link href='http://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{% static 'commonplace/style.css' %}" />
     <link rel="stylesheet" href="{% static 'commonplace/bootstrap-3.1.1-dist/css/bootstrap.css' %}" />
@@ -82,10 +82,11 @@
 
 
 </div>
-
+  {% if show_rec_block %}
     <div class="recommendation">
         {% block content1 %}{% endblock %}
     </div>
+    {% endif %}
 {% endif %}
 
 </body>

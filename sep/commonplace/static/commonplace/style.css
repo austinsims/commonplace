@@ -15,14 +15,14 @@ body {
             font-size: 11px;
             padding-top: 70px;
             margin: 0;
-           background: url("http://www.americapictures.net/wp-content/uploads/2012/05/night-view-building-chicago-illinois-united-states.jpg") no-repeat #000;
-           height: auto;
-            background-position: center;
-              -webkit-background-size: cover;
-            -moz-background-size: cover;
-            -o-background-size: cover;
-            background-size: cover;
-         background-attachment: fixed;
+           background: rgb(255,255,255);
+            background: -moz-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%, rgba(171,209,234,1) 100%);
+            background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(171,209,234,1)));
+            background: -webkit-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(171,209,234,1) 100%);
+            background: -o-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(171,209,234,1) 100%);
+            background: -ms-radial-gradient(center, ellipse cover,  rgba(255,255,255,1) 0%,rgba(171,209,234,1) 100%);
+            background: radial-gradient(ellipse at center,  rgba(255,255,255,1) 0%,rgba(171,209,234,1) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#abd1ea',GradientType=1 );
 }
 
         
@@ -35,22 +35,23 @@ body {
         #name{
         	font-size: 20px;
         }
+
         .inner_content{
-        margin: auto;  
-        position: absolute;
-        left:0;
-        right: 0;
-        top: 0;
-        bottom: 0; 
-        background-color:black;
-        background: rgba(0,0,0,0.7);
-        padding:200px;
+            margin: auto;  
+            position: absolute;
+            left:0;
+            right: 0;
+            top: 0;
+            bottom: 0; 
+            background-color:black;
+            background: rgba(0,0,0,0.7);
+            padding:200px;
 
 
         }
        
         .googleFont{
-             font-family: 'Pacifico', cursive;
+             font-family: 'Cabin', sans-serif;
              color: white;
              font-size: 57px
            }
@@ -68,10 +69,10 @@ body {
             text-align:left; /* Counteract to IE5/Win Hack */
             border:1px solid #333;
             padding:13px;
-            background: rgba(0,0,0,0.8);
-            color:white;
+            background:white;
+            color:black;
             text-align: center;
-            font-family: 'Lobster', cursive; 
+            font-family: 'Cabin', sans-serif;
         }
         .recommendation{
             position: relative;
@@ -80,11 +81,11 @@ body {
             float:right;
             margin:50px;
             padding:9px;
-           background: rgba(0,0,0,0.8);
+           background: white;
            overflow: scroll;
            overflow-x:hidden;
            border:1px solid #333;
-           color: white;
+           color: black;
 
         }
 
